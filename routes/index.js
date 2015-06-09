@@ -1,3 +1,4 @@
 // convenience wrapper around all other files:
 exports.site = require('./site');
-exports.users = require('./users');
+exports.companies = require('./companies');
+exports.people = require('./people');

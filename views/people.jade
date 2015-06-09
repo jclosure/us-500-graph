@@ -1,0 +1,18 @@
+extends layout
+
+block content
+    h1 People
+
+    if people.length
+        p Here are the current people:
+        ul.people
+            for person in people
+                li.person
+                    a(href='/people/#{person.id}') #{person.name}
+    else
+        p There are no people currently.
+
+    form(action='', method='POST')
+        p Create a new person:
+        input(type='text', name='name', placeholder='Name', required)
+        input(type='submit', value='Create')

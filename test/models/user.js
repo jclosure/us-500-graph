@@ -1,23 +1,23 @@
 //
 // User model tests. These are basically CRUD tests, ordered to let us test
-// all cases, plus listing all users and following/unfollowing between users.
+// all cases, plus listing all companies and following/unfollowing between companies.
 //
-// It's worth noting that there may already be users in the database, so these
+// It's worth noting that there may already be companies in the database, so these
 // tests must not assume the initial state is empty.
 //
 // High-level test plan:
 //
-// - List initial users.
+// - List initial companies.
 // - Create a user A.
 // - Fetch user A. Should be the same.
-// - List users again; should be initial list plus user A.
+// - List companies again; should be initial list plus user A.
 // - Update user A, e.g. its name.
 // - Fetch user A again. It should be updated.
 // - Delete user A.
 // - Try to fetch user A again; should fail.
-// - List users again; should be back to initial list.
+// - List companies again; should be back to initial list.
 //
-// - Create two users in parallel, B and C.
+// - Create two companies in parallel, B and C.
 // - Fetch both user's "following and others"; both should show no following.
 // - Have user B follow user C.
 // - Have user B follow user C again; should be idempotent.
@@ -25,11 +25,11 @@
 // - Fetch user C's "following and others"; should show not following user B.
 // - Have user B unfollow user C.
 // - Have user B unfollow user C again; should be idempotent.
-// - Fetch both users' "following and others" again; both should follow none.
+// - Fetch both companies' "following and others" again; both should follow none.
 //
 // - Create a user D.
 // - Have user B follow user C follow user D.
-// - Fetch all users' "following and others"; should be right.
+// - Fetch all companies' "following and others"; should be right.
 // - Delete user B.
 // - Fetch user C's and D's "following and others"; should be right.
 // - Delete user D.
@@ -70,14 +70,14 @@ function expectUser(obj, user) {
 }
 
 /**
- * Asserts that the given array of users contains the given user,
+ * Asserts that the given array of companies contains the given user,
  * exactly and only once.
  */
-function expectUsersToContain(users, expUser) {
+function expectUsersToContain(companies, expUser) {
     var found = false;
 
-    expect(users).to.be.an('array');
-    users.forEach(function (actUser) {
+    expect(companies).to.be.an('array');
+    companies.forEach(function (actUser) {
         if (actUser.id === expUser.id) {
             expect(found, 'User already found').to.equal(false);
             expectUser(actUser, expUser);
@@ -88,11 +88,11 @@ function expectUsersToContain(users, expUser) {
 }
 
 /**
- * Asserts that the given array of users does *not* contain the given user.
+ * Asserts that the given array of companies does *not* contain the given user.
  */
-function expectUsersToNotContain(users, expUser) {
-    expect(users).to.be.an('array');
-    users.forEach(function (actUser) {
+function expectUsersToNotContain(companies, expUser) {
+    expect(companies).to.be.an('array');
+    companies.forEach(function (actUser) {
         expect(actUser.id).to.not.equal(expUser.id);
     });
 }
@@ -101,7 +101,7 @@ function expectUsersToNotContain(users, expUser) {
  * Fetches the given user's "following and others", and asserts that it
  * reflects the given list of expected following and expected others.
  * The expected following is expected to be a complete list, while the
- * expected others may be a subset of all users.
+ * expected others may be a subset of all companies.
  * Calls the given callback (err, following, others) when complete.
  */
 function expectUserToFollow(user, expFollowing, expOthers, callback) {
@@ -140,16 +140,16 @@ describe('User models:', function () {
 
     // Single user CRUD:
 
-    it('List initial users', function (next) {
-        User.getAll(function (err, users) {
+    it('List initial companies', function (next) {
+        User.getAll(function (err, companies) {
             if (err) return next(err);
 
-            expect(users).to.be.an('array');
-            users.forEach(function (user) {
+            expect(companies).to.be.an('array');
+            companies.forEach(function (user) {
                 expectUser(user);
             });
 
-            INITIAL_USERS = users;
+            INITIAL_USERS = companies;
             return next();
         });
     });
@@ -176,15 +176,15 @@ describe('User models:', function () {
         });
     });
 
-    it('List users again', function (next) {
-        User.getAll(function (err, users) {
+    it('List companies again', function (next) {
+        User.getAll(function (err, companies) {
             if (err) return next(err);
 
             // the order isn't part of the contract, so we just test that the
             // new array is one longer than the initial, and contains user A.
-            expect(users).to.be.an('array');
-            expect(users).to.have.length(INITIAL_USERS.length + 1);
-            expectUsersToContain(users, USER_A);
+            expect(companies).to.be.an('array');
+            expect(companies).to.have.length(INITIAL_USERS.length + 1);
+            expectUsersToContain(companies, USER_A);
 
             return next();
         });
@@ -220,15 +220,15 @@ describe('User models:', function () {
         });
     });
 
-    it('List users again', function (next) {
-        User.getAll(function (err, users) {
+    it('List companies again', function (next) {
+        User.getAll(function (err, companies) {
             if (err) return next(err);
 
             // like before, we just test that this array is now back to the
             // initial length, and *doesn't* contain user A.
-            expect(users).to.be.an('array');
-            expect(users).to.have.length(INITIAL_USERS.length);
-            expectUsersToNotContain(users, USER_A);
+            expect(companies).to.be.an('array');
+            expect(companies).to.have.length(INITIAL_USERS.length);
+            expectUsersToNotContain(companies, USER_A);
 
             return next();
         });
@@ -236,7 +236,7 @@ describe('User models:', function () {
 
     // Two-user following:
 
-    it('Create users B and C', function (next) {
+    it('Create companies B and C', function (next) {
         var nameB = 'Test User B';
         var nameC = 'Test User C';
 

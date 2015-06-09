@@ -48,14 +48,26 @@ app.locals({
 
 app.get('/', routes.site.index);
 
-app.get('/users', routes.users.list);
-app.post('/users', routes.users.create);
-app.get('/users/:id', routes.users.show);
-app.post('/users/:id', routes.users.edit);
-app.del('/users/:id', routes.users.del);
+// Company Routes
+app.get('/companies', routes.companies.list);
+app.post('/companies', routes.companies.create);
+app.get('/companies/:id', routes.companies.show);
+app.post('/companies/:id', routes.companies.edit);
+app.del('/companies/:id', routes.companies.del);
 
-app.post('/users/:id/follow', routes.users.follow);
-app.post('/users/:id/unfollow', routes.users.unfollow);
+app.post('/companies/:id/follow', routes.companies.follow);
+app.post('/companies/:id/unfollow', routes.companies.unfollow);
+
+// People Routes
+app.get('/people', routes.people.list);
+app.post('/people', routes.people.create);
+app.get('/people/:id', routes.people.show);
+app.post('/people/:id', routes.people.edit);
+app.del('/people/:id', routes.people.del);
+
+app.post('/people/:id/follow', routes.people.follow);
+app.post('/people/:id/unfollow', routes.people.unfollow);
+
 
 
 console.log("Launching: " + app.get('env'));
