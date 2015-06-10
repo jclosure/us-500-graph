@@ -143,6 +143,7 @@ describe('Entity entities:', function () {
 
   it('Entity definition should not be null', function (next) {
     expect(Entity).to.not.equal(null);
+    //expect(true).to.equal(true);
     return next();
   });
 
