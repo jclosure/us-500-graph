@@ -13,9 +13,11 @@ var db = new neo4j.GraphDatabase(
 
 var Entity = module.exports = function Entity(_node) {
     // all we'll really store is the node; the rest of our properties will be
-    // derivable or just pass-through properties (see below).
-    this._node = _node;
+  // derivable or just pass-through properties (see below).
+  this._node = _node;
+  this._class = this.constructor;
 }
+
 
 // public instance properties:
 
@@ -91,17 +93,20 @@ Entity.getAll = function (callback) {
 };
 
 // creates the entity and persists (saves) it to the db, incl. indexing it:
-Entity.create = function (data, callback) {
+Entity.create = function (data, callback, type) {
     // construct a new instance of our class with the data, so it can
     // validate and extend it, etc., if we choose to do that in the future:
     var node = db.createNode(data);
-    var entity = new Entity(node);
+    var t = type || Entity; 
+    var entity = new t(node);
 
+  console.log("ClassName: " + entity._class.name);
+  
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support
     // that, since it uses Neo4j's REST API, which doesn't support that.)
     var query = [
-        'CREATE (entity:Entity {data})',
+        'CREATE (entity:' + entity._class.name + ' {data})',
         'RETURN entity',
     ].join('\n');
 
@@ -111,7 +116,7 @@ Entity.create = function (data, callback) {
 
     db.query(query, params, function (err, results) {
         if (err) return callback(err);
-        var entity = new Entity(results[0]['entity']);
+        var entity = new t(results[0]['entity']);
         callback(null, entity);
     });
 };

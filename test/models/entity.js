@@ -141,9 +141,8 @@ function expectEntityToFollow(entity, expFollowing, expOthers, callback) {
 
 describe('Entity entities:', function () {
 
-  it('Entity definition should not be null', function (next) {
+  it('Entity setup', function (next) {
     expect(Entity).to.not.equal(null);
-    //expect(true).to.equal(true);
     return next();
   });
 
