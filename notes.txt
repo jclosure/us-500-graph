@@ -1,5 +1,35 @@
 
-for express apps debugging in chrome
+#for install of phantomjs in windows:
+
+1. try with npm:
+
+run: npm -g install phantomjs
+
+#if fail:
+
+1. install from src
+
+grab src from here: https://github.com/Medium/phantomjs
+
+run: node ./install.js
+
+C:\Users\JHOLDER\AppData\Roaming\npm\node_modules\phantomjs>node ./install.js
+
+#if fail:
+
+1. copy
+npm -g install
+C:\Users\JHOLDER\AppData\Roaming\npm\node_modules\install\install.js
+->
+C:\Users\JHOLDER\
+
+2. install from npm src dir
+run: node ./install.js
+
+C:\Users\JHOLDER\AppData\Roaming\npm\node_modules\phantomjs>node ./install.js
+
+
+#for express apps debugging in chrome
 
 window 1:
 1. node-inspector
@@ -8,12 +38,12 @@ window 2:
 2. node --debug app.js
 
 
-for non-server apps debugging in chrome
+#for non-server apps debugging in chrome
 
 window 1:
 1. node-debug app.js --fwd-io --profile
 
-for non-server apps debugging in node with debugger
+#for non-server apps debugging in node with debugger
 
 window 1:
 1. node --debug app.js
