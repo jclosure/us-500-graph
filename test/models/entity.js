@@ -40,8 +40,11 @@
 // E.g. what am I "describing", and what should "it" do?? Help welcome! =)
 //
 
+var chai = require('chai');
+var expect = chai.expect;
 
-var expect = require('chai').expect;
+
+
 var Entity = require('../../models/entity');
 
 
@@ -138,12 +141,18 @@ function expectEntityToFollow(entity, expFollowing, expOthers, callback) {
 
 describe('Entity entities:', function () {
 
+  it('Entity definition should not be null', function (next) {
+    expect(Entity).to.not.equal(null);
+    return next();
+  });
+
+  
     // Single entity CRUD:
 
     it('List initial entities', function (next) {
-        Entity.getAll(function (err, entities) {
+      
+      Entity.getAll(function (err, entities) {
             if (err) return next(err);
-
             expect(entities).to.be.an('array');
             entities.forEach(function (entity) {
                 expectEntity(entity);
@@ -157,7 +166,8 @@ describe('Entity entities:', function () {
     it('Create entity A', function (next) {
         var name = 'Test Entity A';
         Entity.create({name: name}, function (err, entity) {
-            if (err) return next(err);
+
+           if (err) return next(err);
 
             expectEntity(entity);
             expect(entity.id).to.be.a('number');

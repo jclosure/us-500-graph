@@ -40,7 +40,9 @@ Entity.prototype.save = function (callback) {
     });
 };
 
-Entity.prototype.del = function (callback, relations) {
+
+//TODO: THIS HAS BEEN MODED (QUERY - FIX)
+Entity.prototype.del = function (callback) {
     // use a Cypher query to delete both this entity and his/her following
     // relationships in one transaction and one network request:
     // (note that this'll still fail if there are any relationships attached
@@ -114,7 +116,9 @@ Entity.create = function (data, callback) {
     });
 };
 
-// relationsEntity.prototype.follow = function (other, callback) {
+// relations
+
+Entity.prototype.follow = function (other, callback) {
     this._node.createRelationshipTo(other._node, 'follows', {}, function (err, rel) {
         callback(err);
     });
