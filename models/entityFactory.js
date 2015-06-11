@@ -9,14 +9,11 @@ var db = new neo4j.GraphDatabase(
 
 );
 
-console.log("db");
 
 var EntityFactory = module.exports = function EntityFactory(Type) {
 
   
-  console.log("newup");
-  
-  // private constructor:
+   // private constructor:
 
   Entity = module.exports = function (_node) {
     this._node = _node;
@@ -84,6 +81,7 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
   
   Entity.prototype.relate = function (relationType, other, callback) {
     this._node.createRelationshipTo(other._node, relationType, {}, function (err, rel) {
+      debugger;
       callback(err);
     });
   };
@@ -169,12 +167,13 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
 
     var node = db.createNode(data);
     var entity = new Entity(node);
+    
 
     
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support
     // that, since it uses Neo4j's REST API, which doesn't support that.)
-    debugger;
+
     var query = [
       'CREATE (entity:' + label + ' {data})',
       'RETURN entity',
@@ -185,9 +184,9 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
     };
 
     db.query(query, params, function (err, results) {      
-      debugger;
       if (err) return callback(err);
       var entity = new Entity(results[0]['entity']);
+      entity._class = label;
       callback(null, entity);
     });
 

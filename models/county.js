@@ -1,3 +1,3 @@
-global.EntityFactory = global.EntityFactory || require('./entityFactory');
+require("./common");
 var County  = module.exports = new EntityFactory().build();
 

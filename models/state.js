@@ -1,4 +1,4 @@
-global.EntityFactory = global.EntityFactory || require('./entityFactory');
+require('./common');
 var State  = module.exports = new EntityFactory().build();
 
 

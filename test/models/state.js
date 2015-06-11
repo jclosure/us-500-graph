@@ -1,5 +1,8 @@
 // populate.js
 
+State = require('../../models/state');
+    
+
 var chai = require('chai');
 var expect = chai.expect;
 
@@ -14,9 +17,6 @@ describe('Populating state:', function () {
 
   it('Should have class of type State', function (next) {
 
-   
-    State = require('../../models/state');
-    
     var props = {
       name: "Ohio",
       population: 888

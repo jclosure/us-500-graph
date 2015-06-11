@@ -5,8 +5,9 @@ var expect = chai.expect;
 
 var _ = require('underscore');
 
-//this gets setup global singleton
-global.EntityFactory =  global.EntityFactory || require('../../models/entityFactory');
+//var EntityFactory = require('../../models/entityFactory');
+// instead...
+require('../../models/common');
 
 // Tests:
 
@@ -23,7 +24,7 @@ describe('Making different types of entities:', function () {
     
     E1.create("City", props, function (err, entity) {
       if (err) return next(err);
-      debugger;
+
       expect(entity.id).to.be.a('number');
       expect(entity.name).to.be.equal(props.name);
       expect(entity.prop1).to.be.equal(props.prop1);
@@ -39,7 +40,7 @@ describe('Making different types of entities:', function () {
       
       E1.create("City", props2, function (err, entity) {
         if (err) return next(err);
-        debugger;
+
         expect(entity.id).to.be.a('number');
         expect(entity.name).to.be.equal(props2.name);
         expect(entity.prop1).to.be.equal(props2.prop1);
@@ -66,7 +67,7 @@ describe('Making different types of entities:', function () {
     
     E1.create("County", props, function (err, entity) {
       if (err) return next(err);
-      debugger;
+
       expect(entity.id).to.be.a('number');
       expect(entity.name).to.be.equal(props.name);
       expect(entity.prop1).to.be.equal(props.prop1);
@@ -89,7 +90,7 @@ describe('Making different types of entities:', function () {
       
       E2.create("County", props2, function (err, entity) {
         if (err) return next(err);
-        debugger;
+
         expect(entity.id).to.be.a('number');
         expect(entity.name).to.be.equal(props2.name);
         expect(entity.prop1).to.be.equal(props2.prop1);
