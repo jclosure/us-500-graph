@@ -48,3 +48,12 @@ window 1:
 window 1:
 1. node --debug app.js
 
+## debugging tests
+
+# node-cli
+1. run: mocha debug tests/tests.js -R spec
+
+# node-inspector
+1. run: mocha --debug-brk tests/test.js
+2. run: node-inspector
+3. navigate to: http://127.0.0.1:8080/debug?port=5858
