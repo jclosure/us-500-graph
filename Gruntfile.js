@@ -42,7 +42,7 @@ module.exports = function(grunt){
           clearRequireCache: true,
           quiet: false
         },
-        src: ['test/**/*.js']
+        src: ['test/live/*.js']
       }
     },
 
