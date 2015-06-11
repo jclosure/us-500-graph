@@ -26,7 +26,7 @@ module.exports = function(grunt){
       options: {
         run: true,
         require: [
-          'models/entity', //from proj root
+          //'models/entity', //from proj root
           //'./globals.js',
           //function(){ testVar1=require('./stuff'); },
           //function(){ testVar2='other-stuff'; }
@@ -50,6 +50,9 @@ module.exports = function(grunt){
       js: {
         options: {
           spawn: false,
+          require: [
+           'models/state' 
+          ]
         },
         files: '**/*.js',
         tasks: ['default']

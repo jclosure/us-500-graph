@@ -12,6 +12,7 @@
   "devDependencies": {
     "chai": "^3.0.0",
     "grunt": "latest",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-mocha": "^0.4.12",
     "grunt-mocha-test": "^0.12.7",

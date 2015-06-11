@@ -9,10 +9,13 @@ var db = new neo4j.GraphDatabase(
 
 );
 
+console.log("db");
 
 var EntityFactory = module.exports = function EntityFactory(Type) {
 
-
+  
+  console.log("newup");
+  
   // private constructor:
 
   Entity = module.exports = function (_node) {
@@ -24,7 +27,7 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
 
   this.build = function () { return Entity; };
 
-
+  
   // Entity Buildout Below   
   
   // public instance properties:
@@ -77,6 +80,36 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
   };
 
 
+
+  
+  Entity.prototype.relate = function (relationType, other, callback) {
+    this._node.createRelationshipTo(other._node, relationType, {}, function (err, rel) {
+      callback(err);
+    });
+  };
+
+  Entity.prototype.unrelate = function (relationType, other, callback) {
+    //todo: optimize by using labels for entities
+    var query = [
+      'MATCH (entity) -[rel:' + relationType + ']-> (other)',
+      'WHERE ID(entity) = {entityId} AND ID(other) = {otherId}',
+      'DELETE rel',
+    ].join('\n')
+
+    var params = {
+      entityId: this.id,
+      otherId: other.id,
+    };
+
+    db.query(query, params, function (err) {
+      callback(err);
+    });
+  };
+  
+
+  
+
+  
   // static methods:
 
   Entity.addProperties = function (props) {
@@ -138,11 +171,10 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
     var entity = new Entity(node);
 
     
-    debugger;
-    
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support
     // that, since it uses Neo4j's REST API, which doesn't support that.)
+    debugger;
     var query = [
       'CREATE (entity:' + label + ' {data})',
       'RETURN entity',
@@ -153,6 +185,7 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
     };
 
     db.query(query, params, function (err, results) {      
+      debugger;
       if (err) return callback(err);
       var entity = new Entity(results[0]['entity']);
       callback(null, entity);
@@ -160,8 +193,10 @@ var EntityFactory = module.exports = function EntityFactory(Type) {
 
   };
 
-  // relations
 
+  // follow relations
+
+  
   Entity.prototype.follow = function (other, callback) {
     this._node.createRelationshipTo(other._node, 'follows', {}, function (err, rel) {
       callback(err);

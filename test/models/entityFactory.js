@@ -5,8 +5,8 @@ var expect = chai.expect;
 
 var _ = require('underscore');
 
-var EntityFactory = require('../../models/entityFactory');
-
+//this gets setup global singleton
+global.EntityFactory =  global.EntityFactory || require('../../models/entityFactory');
 
 // Tests:
 

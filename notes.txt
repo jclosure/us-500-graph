@@ -57,3 +57,9 @@ window 1:
 1. run: mocha --debug-brk tests/test.js
 2. run: node-inspector
 3. navigate to: http://127.0.0.1:8080/debug?port=5858
+
+## debugging grunt itself
+
+grunt test -v --debug
+or
+grunt -v -d 1
