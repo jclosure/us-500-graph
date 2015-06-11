@@ -100,7 +100,6 @@ Entity.create = function (data, callback, type) {
     var t = type || Entity; 
     var entity = new t(node);
 
-  console.log("ClassName: " + entity._class.name);
   
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support

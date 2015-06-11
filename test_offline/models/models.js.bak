@@ -1,0 +1,51 @@
+// populate.js
+
+var chai = require('chai');
+var expect = chai.expect;
+
+var _ = require('underscore');
+
+var Entity = require('../../models/entity'); 
+var models = require('../../models/models');
+
+
+var City = models.city;
+var County = models.county;
+
+
+// Tests:
+
+describe('Models are available:', function () {
+
+
+
+  
+  it('Models are just modules', function (next) {
+
+    var props = {
+      name: "abc",
+      population: 888
+    };
+
+    var classes = [City, County];
+    
+    classes.forEach(function(klass){
+
+      console.log(klass);
+      
+      Entity.create(props, function (err, entity, klass) {
+        console.log("callback run");  
+        if (err) return next(err);
+        console.log(entity);
+        expect(entity.id).to.be.a('number');
+        expect(entity.name).to.be.equal(props.name);
+        expect(entity.population).to.be.equal(props.population);
+        expect(entity._class.name).to.be.equal(new klass().constructor.name);
+      });
+      
+    });
+    
+    return next();
+  });
+
+});

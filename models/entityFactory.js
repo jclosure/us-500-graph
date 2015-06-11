@@ -9,18 +9,15 @@ var db = new neo4j.GraphDatabase(
 
 );
 
-function DefaultEntity(_node) {
-  // all we'll really store is the node; the rest of our properties will be
-  // derivable or just pass-through properties (see below).
-  this._node = _node;
-}
 
-var EntityFactory = module.exports = function EntityFactory(type, props) {
+var EntityFactory = module.exports = function EntityFactory(Type) {
 
 
   // private constructor:
 
-  Entity = module.exports = type || DefaultEntity;
+  Entity = module.exports = function (_node) {
+    this._node = _node;
+  };
 
 
   // factory api
@@ -45,18 +42,6 @@ var EntityFactory = module.exports = function EntityFactory(type, props) {
     }
   });
 
-  if (!!props) {
-    props.forEach(function(prop){
-        Object.defineProperty(Entity.prototype, prop, {
-          get: function () {
-            return this._node.data[prop];
-          },
-          set: function (name) {
-            this._node.data[prop] = name;
-          }
-        });
-    });
-  }
 
   // public instance methods:
 
@@ -94,6 +79,19 @@ var EntityFactory = module.exports = function EntityFactory(type, props) {
 
   // static methods:
 
+  Entity.addProperties = function (props) {
+    props.forEach(function(prop){
+      Object.defineProperty(Entity.prototype, prop, {
+        get: function () {
+          return this._node.data[prop];
+        },
+        set: function (name) {
+          this._node.data[prop] = name;
+        }
+      });
+    });
+  }
+
   Entity.get = function (id, callback) {
     db.getNodeById(id, function (err, node) {
       if (err) return callback(err);
@@ -117,17 +115,36 @@ var EntityFactory = module.exports = function EntityFactory(type, props) {
   };
 
   // creates the entity and persists (saves) it to the db, incl. indexing it:
-  Entity.create = function (data, callback) {
+  Entity.create = function (label, data, callback) {
     // construct a new instance of our class with the data, so it can
     // validate and extend it, etc., if we choose to do that in the future:
+
+    Object.getOwnPropertyNames(data).forEach(function(key) {  
+      //var val = data[key]);
+      if (!Entity.prototype.hasOwnProperty(key)) {
+        Object.defineProperty(Entity.prototype, key, {
+          get: function () {
+            return this._node.data[key];
+          },
+          set: function (v) {
+            this._node.data[key] = v;
+          }
+        })
+      }
+    });
+
+
     var node = db.createNode(data);
     var entity = new Entity(node);
 
+    
+    debugger;
+    
     // but we do the actual persisting with a Cypher query, so we can also
     // apply a label at the same time. (the save() method doesn't support
     // that, since it uses Neo4j's REST API, which doesn't support that.)
     var query = [
-      'CREATE (entity:Entity {data})',
+      'CREATE (entity:' + label + ' {data})',
       'RETURN entity',
     ].join('\n');
 
@@ -135,7 +152,7 @@ var EntityFactory = module.exports = function EntityFactory(type, props) {
       data: data
     };
 
-    db.query(query, params, function (err, results) {
+    db.query(query, params, function (err, results) {      
       if (err) return callback(err);
       var entity = new Entity(results[0]['entity']);
       callback(null, entity);
