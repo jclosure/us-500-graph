@@ -1,6 +1,8 @@
 // entity.js
 // Base entity logic.
 
+
+
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(
   process.env['NEO4J_URL'] ||
@@ -71,9 +73,10 @@ Entity.prototype.del = function (callback) {
 };
 
 Entity.prototype.relate = function (relationType, other, callback) {
-  var caller = arguments.callee.caller.toString();
+  //var caller = arguments.callee.caller.toString();
   debugger;
   this._node.createRelationshipTo(other._node, relationType, {}, function (err, rel) {
+    //if ( typeof callback === 'undefined' ) { callback = function() {}; }
     debugger;
     callback(err);
   });
@@ -140,8 +143,6 @@ Entity.getAll = function (label, callback) {
 Entity.create = function (_class, data, callback) {
   // construct a new instance of our class with the data, so it can
   // validate and extend it, etc., if we choose to do that in the future:
-
-  debugger;
   
   Object.getOwnPropertyNames(data).forEach(function(key) {  
     //var val = data[key]);
@@ -157,11 +158,8 @@ Entity.create = function (_class, data, callback) {
     }
   });
 
-
   var node = db.createNode(data);
   var entity = new _class(node);
-  
-
   
   // but we do the actual persisting with a Cypher query, so we can also
   // apply a label at the same time. (the save() method doesn't support
@@ -177,12 +175,11 @@ Entity.create = function (_class, data, callback) {
   };
 
   // note: this is where entity classes actually get created!!!
-  db.query(query, params, function (err, results) {      
+  db.query(query, params, function (err, results) {
     if (err) return callback(err);
     var entity = new _class(results[0]['entity']);
     //copy the properties from parent class invokation
     entity._class = _class;
-    debugger;
     callback(null, entity);
   });
 
