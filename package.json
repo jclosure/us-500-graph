@@ -16,6 +16,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-mocha": "^0.4.12",
     "grunt-mocha-test": "^0.12.7",
+    "grunt-strip-debug": "^1.0.1",
+    "load-grunt-tasks": "^3.2.0",
     "mocha": "^2.2.5",
     "node-dev": "~2.0.1",
     "requirejs": ">=2.1.10",

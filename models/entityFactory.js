@@ -73,11 +73,7 @@ Entity.prototype.del = function (callback) {
 };
 
 Entity.prototype.relate = function (relationType, other, callback) {
-  //var caller = arguments.callee.caller.toString();
-  debugger;
   this._node.createRelationshipTo(other._node, relationType, {}, function (err, rel) {
-    //if ( typeof callback === 'undefined' ) { callback = function() {}; }
-    debugger;
     callback(err);
   });
 };
@@ -100,7 +96,24 @@ Entity.prototype.unrelate = function (relationType, other, callback) {
   });
 };
 
+Entity.prototype.getRelationByType = function (relationType, other, callback) {
+  //todo: optimize by using labels for entities
+  var query = [
+    'MATCH (entity) -[rel:' + relationType + ']-> (other)',
+    'WHERE ID(entity) = {entityId} AND ID(other) = {otherId}',
+    'return rel',
+  ].join('\n')
 
+  var params = {
+    entityId: this.id,
+    otherId: other.id,
+  };
+
+  db.query(query, params, function (err, result) {
+    var rel = result['rel'] || false;
+    callback(err, rel);
+  });
+};
 
 // static methods:
 
@@ -117,24 +130,49 @@ Entity.addProperties = function (props) {
   });
 }
 
-Entity.get = function (id, callback) {
-  db.getNodeById(id, function (err, node) {
+Entity.get = function (_class, id, callback) {
+  db.getNodeById(id, function (err, result) {
     if (err) return callback(err);
-    callback(null, new Entity(node));
+    var entity =  new _class(result);
+    entity._class = _class;
+    callback(null, entity);
   });
 };
 
-Entity.getAll = function (label, callback) {
+Entity.getAll = function (_class, callback) {
   var query = [
-    'MATCH (entity:' + label + ')',
+    'MATCH (entity:' + _class._label + ')',
     'RETURN entity',
   ].join('\n');
 
   db.query(query, null, function (err, results) {
     if (err) return callback(err);
     var entitys = results.map(function (result) {
-      return new Entity(result['entity']);
+      var entity = new _class(result['entity']);
+      entity._class = _class;
+      return entity;
     });
+    callback(null, entitys);
+  });
+};
+
+Entity.getAllWhere = function (_class, queryWhere, callback) {
+  var query = [
+    'MATCH (entity:' + _class._label + ')',
+    'WHERE ' + queryWhere,
+    'RETURN entity',
+  ].join('\n');
+
+  // NOTE: check the where clause to ensure its good...
+  //debugger;
+  db.query(query, null, function (err, results) {
+    if (err) return callback(err);
+    var entitys = results.map(function (result) {
+      var entity = new _class(result['entity']);
+      entity._class = _class;
+      return entity;
+    });
+    //debugger;
     callback(null, entitys);
   });
 };
@@ -178,12 +216,12 @@ Entity.create = function (_class, data, callback) {
   db.query(query, params, function (err, results) {
     if (err) return callback(err);
     var entity = new _class(results[0]['entity']);
-    //copy the properties from parent class invokation
     entity._class = _class;
     callback(null, entity);
   });
 
 };
+
 
 
 // follow relations

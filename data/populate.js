@@ -26,20 +26,29 @@ var domain = require('../models/domain.js');
 function noop(){};
 
 function populateRecord(record, signaler) {
-  domain.State.create(record.state, function (err, state) {
-    domain.County.create(record.county, function (err, county) {
-      domain.City.create(record.city, function (err, city) {
-        domain.Address.create(record.address, function (err, address) {
-          domain.Zipcode.create(record.zipcode, function (err, zipcode) {
-            domain.Company.create(record.company, function (err, company) {
-              domain.Person.create(record.person, function (err, person) {
+  domain.State.getAllByPropertyOrCreate("name", record.state.name, record.state, function (err, states) {
+    domain.County.getAllByPropertyOrCreate("name", record.county.name, record.county, function (err, counties) {
+      domain.City.getAllByPropertyOrCreate("name", record.city.name, record.city, function (err, cities) {
+        domain.Address.getAllByPropertyOrCreate("line", record.address.line, record.address, function (err, addresses) {
+          domain.Zipcode.getAllByPropertyOrCreate("number", record.zipcode.number, record.zipcode, function (err, zipcodes) {
+            domain.Company.getAllByPropertyOrCreate("name", record.company.name, record.company, function (err, companies) {
+              domain.Person.getAllByPropertyOrCreate("name", record.person.name, record.person, function (err, people) {
+
+                
+                var person = people[0],
+                    company = companies[0],
+                    zipcode = zipcodes[0],
+                    address = addresses[0],
+                    city = cities[0],
+                    county = counties[0],
+                    state = states[0];
                 
                 // compose graph relations
-
                                
                 // employee--company
                 person.employed_by(company, noop);
                 company.employ(person, noop);
+          
 
                 // composing address model graph
                 company.located_at(address, noop);
@@ -47,7 +56,7 @@ function populateRecord(record, signaler) {
                 city.belong_to(county, noop);
                 county.belong_to(state, noop);
 
-                // // zipcode mutual belonging
+                // zipcode mutual belonging
                 address.belong_to(zipcode, noop);
                 zipcode.belong_to(address, noop);
                 city.belong_to(zipcode, noop);
@@ -131,7 +140,8 @@ function aquireRecords(csvFileName, report) {
 
     var records = jsonObj.map(function(obj){ return destructure(obj); });
      
-    _.take(records, 5).forEach(function(record, idx){
+    // _.take(records, 1).forEach(function(record, idx){
+    records.forEach(function(record, idx){
       report("submitting record for company: " + record.company.name);
       populateRecord(record, { report: report });
     });

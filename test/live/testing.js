@@ -92,25 +92,80 @@ describe('Entity model testing:', function () {
   });
 
 
+  
   it('Should be able to get from the graph', function (next) {
       
     expect(County).to.exist; 
 
     County.create(travisProps, function (err, entity) {
-
+      
       if (err) return next(err);
-
+      debugger;
       County.get(entity.id, function(err, found){
         debugger;
+        expect(found).to.exist;
         return next();        
-      }
-
-
+      })
     });
       
   });
 
-  
+   
+  it('Should be able to get all Counties from the graph', function (next) {
+      
+    expect(County).to.exist; 
+
+    County.create(travisProps, function (err, entity) {
+      
+      if (err) return next(err);
+      debugger;
+      County.getAll(function(err, found){
+        debugger;
+       
+        expect(found).to.exist;
+        return next();        
+      })
+    });
+      
+  });
+
+  it('Should be able to get matching Counties from the graph', function (next) {
+      
+    expect(County).to.exist; 
+
+    County.create(travisProps, function (err, entity) {
+      
+      if (err) return next(err);
+      debugger;
+      var where = "entity.name = 'Travis'";
+      County.getAllWhere(where, function(err, found){
+        debugger;
+       
+        expect(found).to.exist;
+        return next();        
+      })
+    });
+      
+  });
+
+
+  it('Should be able to get Counties by property or create one', function (next) {
+    
+    expect(County).to.exist;
+
+    var monkeyProps = { name: "Monkey" };
+    
+    County.getAllByPropertyOrCreate("name","Monkey",monkeyProps, function (err, entities) {
+      if (err) return next(err);
+      debugger;
+      expect(entities).to.exist;
+      expect(entities).to.have.members;
+      return next();        
+    });
+  });
+
+   
+   
   it('Cities belong to Counties, Counties belog to States', function(next){
 
     State.create(texasProps, function (err, state) {

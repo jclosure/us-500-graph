@@ -5,10 +5,12 @@ module.exports = function(grunt){
   banner += '- <%= pkg.description %>n<%= pkg.repository.url %>n';
   banner += 'Built on <%= grunt.template.today("yyyy-mm-dd") %>n*/n';
 
+  // Load grunt tasks (for grunt-strip-debug)
+  require('load-grunt-tasks')(grunt);
+  
   // Load grunt mocha task
   grunt.loadNpmTasks('grunt-mocha');
 
-  
   // Add the grunt-mocha-test tasks.
   grunt.loadNpmTasks('grunt-mocha-test');
 
@@ -18,6 +20,13 @@ module.exports = function(grunt){
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
 
+    stripDebug: {
+        dist: {
+            files: {
+              //'dist/app.js': 'src/app.js'
+            }
+        }
+    },
     // Mocha
     mocha: {
       all: {
