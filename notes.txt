@@ -66,3 +66,9 @@ grunt -v -d 1
 
 ## drop debugger and console.log lines
 If you're using UglifyJS2 then you most likely don't need this package at all. You can just use the drop_debugger and drop_console to achieve the same effect.
+
+## DELETE ENTIRE GRAPH
+
+MATCH (n)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r

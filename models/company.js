@@ -38,10 +38,12 @@ Company.getAllByProperty = function(key, value, callback){
 
 Company.getAllByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
+    debugger;
     if (entities && entities[0])
       callback(null, entities);
     else
       Company.create(data, function(err, entity) {
+        debugger;
         callback(null, [entity]);
       });
   };

@@ -1,6 +1,7 @@
 // populate.js
 
 var _ = require('underscore');
+var async = require('async');
 
 var domain = require('../models/domain.js');
 
@@ -50,21 +51,21 @@ function populateRecord(record, signaler) {
                 company.employ(person, noop);
           
 
-                // composing address model graph
-                company.located_at(address, noop);
-                address.belong_to(city, noop);
-                city.belong_to(county, noop);
-                county.belong_to(state, noop);
+                // // composing address model graph
+                // company.located_at(address, noop);
+                // address.belong_to(city, noop);
+                // city.belong_to(county, noop);
+                // county.belong_to(state, noop);
 
-                // zipcode mutual belonging
-                address.belong_to(zipcode, noop);
-                zipcode.belong_to(address, noop);
-                city.belong_to(zipcode, noop);
-                zipcode.belong_to(city, noop);
-                county.belong_to(zipcode, noop);
-                zipcode.belong_to(county, noop);
-                state.belong_to(zipcode, noop);
-                zipcode.belong_to(state, noop);
+                // // zipcode mutual belonging
+                // address.belong_to(zipcode, noop);
+                // zipcode.belong_to(address, noop);
+                // city.belong_to(zipcode, noop);
+                // zipcode.belong_to(city, noop);
+                // county.belong_to(zipcode, noop);
+                // zipcode.belong_to(county, noop);
+                // state.belong_to(zipcode, noop);
+                // zipcode.belong_to(state, noop);
 
                 signaler.report("successfully populated: " + record.company.name);
               });
@@ -139,11 +140,15 @@ function aquireRecords(csvFileName, report) {
   csvConverter.on("end_parsed",function(jsonObj){
 
     var records = jsonObj.map(function(obj){ return destructure(obj); });
-     
-    // _.take(records, 1).forEach(function(record, idx){
-    records.forEach(function(record, idx){
+
+    //var work = records;
+    var work = _.take(records, 2);
+
+    async.each(work, function(record) {
       report("submitting record for company: " + record.company.name);
-      populateRecord(record, { report: report });
+      populateRecordTest(record, { report: report });
+    }, function(err) {
+      report("Done!...");
     });
 
     report("\nPlease wait while I finish your import...\n");
@@ -154,3 +159,30 @@ function aquireRecords(csvFileName, report) {
   fileStream.pipe(csvConverter);
 }
 
+function noop(){};
+
+function populateRecordTest(record, signaler) {
+ 
+            domain.Company.getAllByPropertyOrCreate("name", record.company.name, record.company, function (err, companies) {
+              //domain.Person.getAllByPropertyOrCreate("name", record.person.name, record.person, function (err, people) {
+
+                
+              //var person = people[0];
+              var company = companies[0];
+                   
+                
+                // compose graph relations
+                               
+                // employee--company
+                //person.employed_by(company, noop);
+                //company.employ(person, noop);
+          
+
+
+
+                signaler.report("successfully populated: " + record.company.name);
+              //});
+            });
+        
+        
+}
