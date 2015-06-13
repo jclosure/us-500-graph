@@ -36,13 +36,13 @@ County.getAllByProperty = function(key, value, callback){
   Entity.getAllWhere(County, where, callback);
 };
 
-County.getAllByPropertyOrCreate = function(key, value, data, callback){
+County.getByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
     if (entities && entities[0])
-      callback(null, entities);
+      callback(null, entities[0]);
     else
       County.create(data, function(err, entity) {
-        callback(null, [entity]);
+        callback(null, entity);
       });
   };
   County.getAllByProperty(key, value, wrapper);

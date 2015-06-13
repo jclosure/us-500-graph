@@ -36,13 +36,13 @@ Person.getAllByProperty = function(key, value, callback){
   Entity.getAllWhere(Person, where, callback);
 };
 
-Person.getAllByPropertyOrCreate = function(key, value, data, callback){
+Person.getByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
     if (entities && entities[0])
-      callback(null, entities);
+      callback(null, entities[0]);
     else
       Person.create(data, function(err, entity) {
-        callback(null, [entity]);
+        callback(null, entity);
       });
   };
   Person.getAllByProperty(key, value, wrapper);

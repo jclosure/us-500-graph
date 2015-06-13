@@ -1,16 +1,13 @@
 // entity.js
 // Base entity logic.
 
-
-
 var neo4j = require('neo4j');
 var db = new neo4j.GraphDatabase(
-  process.env['NEO4J_URL'] ||
+    process.env['NEO4J_URL'] ||
     process.env['GRAPHENEDB_URL'] ||
     'http://localhost:7474'
 
 );
-
 
 
 // private constructor:
@@ -18,11 +15,6 @@ var db = new neo4j.GraphDatabase(
 Entity = module.exports = function Entity (_node) {
   this._node = _node;
 };
-
-
-
-// Entity Buildout
-Entity.db = db;
 
 
 // public instance properties:
@@ -111,8 +103,6 @@ Entity.prototype.unrelate = function (relationType, other, callback) {
 
 
 
-
-
 // static methods:
 
 Entity.addProperties = function (props) {
@@ -162,16 +152,13 @@ Entity.getAllWhere = function (_class, queryWhere, callback) {
   ].join('\n');
 
   // NOTE: check the where clause to ensure its good...
-  debugger;
   db.query(query, null, function (err, results) {
-    debugger;
     if (err) return callback(err);
     var entitys = results.map(function (result) {
       var entity = new _class(result['entity']);
       entity._class = _class;
       return entity;
     });
-    //debugger;
     callback(null, entitys);
   });
 };
@@ -216,6 +203,7 @@ Entity.create = function (_class, data, callback) {
 
   // note: this is where entity classes actually get created!!!
   db.query(query, params, function (err, results) {
+    debugger;
     if (err) return callback(err);
     var entity = new _class(results[0]['entity']);
     entity._class = _class;
@@ -227,7 +215,6 @@ Entity.create = function (_class, data, callback) {
 
 
 // follow relations
-
 
 Entity.prototype.follow = function (other, callback) {
   this._node.createRelationshipTo(other._node, 'follows', {}, function (err, rel) {
@@ -292,5 +279,3 @@ Entity.prototype.getFollowingAndOthers = function (callback) {
     callback(null, following, others);
   });
 };
-
-

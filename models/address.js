@@ -36,13 +36,13 @@ Address.getAllByProperty = function(key, value, callback){
   Entity.getAllWhere(Address, where, callback);
 };
 
-Address.getAllByPropertyOrCreate = function(key, value, data, callback){
+Address.getByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
     if (entities && entities[0])
-      callback(null, entities);
+      callback(null, entities[0]);
     else
       Address.create(data, function(err, entity) {
-        callback(null, [entity]);
+        callback(null, entity);
       });
   };
   Address.getAllByProperty(key, value, wrapper);

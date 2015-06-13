@@ -36,15 +36,13 @@ City.getAllByProperty = function(key, value, callback){
   Entity.getAllWhere(City, where, callback);
 };
 
-City.getAllByPropertyOrCreate = function(key, value, data, callback){
+City.getByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
-    debugger;
     if (entities && entities[0])
-      callback(null, entities);
+      callback(null, entities[0]);
     else
       City.create(data, function(err, entity) {
-        debugger;
-        callback(null, [entity]);
+        callback(null, entity);
       });
   };
   City.getAllByProperty(key, value, wrapper);

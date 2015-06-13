@@ -37,15 +37,13 @@ Zipcode.getAllByProperty = function(key, value, callback){
   Entity.getAllWhere(Zipcode, where, callback);
 };
 
-Zipcode.getAllByPropertyOrCreate = function(key, value, data, callback){
+Zipcode.getByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
-    debugger;
     if (entities && entities[0])
-      callback(null, entities);
+      callback(null, entities[0]);
     else
       Zipcode.create(data, function(err, entity) {
-        debugger;
-        callback(null, [entity]);
+        callback(null, entity);
       });
   };
   Zipcode.getAllByProperty(key, value, wrapper);
