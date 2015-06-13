@@ -26,7 +26,7 @@ var domain = require('../models/domain.js');
 
 function noop(){};
 
-function populateRecord(record, signaler) {
+function populateRecord(record, recordDone) {
   domain.State.getAllByPropertyOrCreate("name", record.state.name, record.state, function (err, states) {
     domain.County.getAllByPropertyOrCreate("name", record.county.name, record.county, function (err, counties) {
       domain.City.getAllByPropertyOrCreate("name", record.city.name, record.city, function (err, cities) {
@@ -51,23 +51,23 @@ function populateRecord(record, signaler) {
                 company.employ(person, noop);
           
 
-                // // composing address model graph
-                // company.located_at(address, noop);
-                // address.belong_to(city, noop);
-                // city.belong_to(county, noop);
-                // county.belong_to(state, noop);
+                // composing address model graph
+                company.located_at(address, noop);
+                address.belong_to(city, noop);
+                city.belong_to(county, noop);
+                county.belong_to(state, noop);
 
-                // // zipcode mutual belonging
-                // address.belong_to(zipcode, noop);
-                // zipcode.belong_to(address, noop);
-                // city.belong_to(zipcode, noop);
-                // zipcode.belong_to(city, noop);
-                // county.belong_to(zipcode, noop);
-                // zipcode.belong_to(county, noop);
-                // state.belong_to(zipcode, noop);
-                // zipcode.belong_to(state, noop);
+                // zipcode mutual belonging
+                address.belong_to(zipcode, noop);
+                zipcode.belong_to(address, noop);
+                city.belong_to(zipcode, noop);
+                zipcode.belong_to(city, noop);
+                county.belong_to(zipcode, noop);
+                zipcode.belong_to(county, noop);
+                state.belong_to(zipcode, noop);
+                zipcode.belong_to(state, noop);
 
-                signaler.report("successfully populated: " + record.company.name);
+                recordDone("successfully populated: " + record.company.name);
               });
             });
           });
@@ -141,17 +141,13 @@ function aquireRecords(csvFileName, report) {
 
     var records = jsonObj.map(function(obj){ return destructure(obj); });
 
-    //var work = records;
-    var work = _.take(records, 2);
+    //var records = records;
+    var records = _.take(records, 50);
 
-    async.each(work, function(record) {
-      report("submitting record for company: " + record.company.name);
-      populateRecordTest(record, { report: report });
-    }, function(err) {
-      report("Done!...");
-    });
-
-    report("\nPlease wait while I finish your import...\n");
+    debugger;
+    processSeries(records,
+                   populateRecord,
+                   function(results) { results.forEach(function(msg) { console.log(msg); }); });
 
   });
   
@@ -159,30 +155,53 @@ function aquireRecords(csvFileName, report) {
   fileStream.pipe(csvConverter);
 }
 
+
+function processSeries(records, work, done){
+
+   // A simple async series:
+  
+    var results = [];
+  function series(record) {
+    debugger;
+      if(record) {
+        work(record, function(result) {
+          results.push(result);
+          return series(records.shift());
+        });
+      } else {
+        done(results);
+        console.log("Done...");
+      }
+    }
+    series(records.shift());//report("\nPlease wait while I finish your import...\n");
+}
+
 function noop(){};
 
-function populateRecordTest(record, signaler) {
- 
-            domain.Company.getAllByPropertyOrCreate("name", record.company.name, record.company, function (err, companies) {
-              //domain.Person.getAllByPropertyOrCreate("name", record.person.name, record.person, function (err, people) {
+function populateRecordTest(record, recordDone) {
 
-                
-              //var person = people[0];
-              var company = companies[0];
-                   
-                
-                // compose graph relations
-                               
-                // employee--company
-                //person.employed_by(company, noop);
-                //company.employ(person, noop);
-          
+  debugger;
+  domain.Company.getAllByPropertyOrCreate("name", record.company.name, record.company, function (err, companies) {
+    //domain.Person.getAllByPropertyOrCreate("name", record.person.name, record.person, function (err, people) {
+
+    debugger;
+    
+    //var person = people[0];
+    var company = companies[0];
+    
+    
+    // compose graph relations
+    
+    // employee--company
+    //person.employed_by(company, noop);
+    //company.employ(person, noop);
+    
 
 
 
-                signaler.report("successfully populated: " + record.company.name);
-              //});
-            });
+    recordDone("successfully populated: " + record.company.name);    
+    //});
+  });
         
         
 }
