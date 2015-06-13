@@ -1,0 +1,7 @@
+
+# find all companies in the same state
+match (c1:Company) -[ra1:LOCATED_AT]-> (a1:Address) -[rb1:BELONGS_TO]-> (z1:Zipcode) -[rc1:BELONGS_TO]-> (s1:State),
+      (c2:Company) -[ra2:LOCATED_AT]-> (a2:Address) -[rb2:BELONGS_TO]-> (z2:Zipcode) -[rc2:BELONGS_TO]-> (s2:State)
+where s1.name = s2.name
+return *
+limit 100
