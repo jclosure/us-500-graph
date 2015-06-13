@@ -33,16 +33,18 @@ Zipcode.getAllWhere = function(where, callback){
 };
 
 Zipcode.getAllByProperty = function(key, value, callback){
-  var where = "entity." + key + " = '" + value + "'";
+  var where = "entity." + key + " = " + value; //note that this is a number so it's not quoted in the cypher query
   Entity.getAllWhere(Zipcode, where, callback);
 };
 
 Zipcode.getAllByPropertyOrCreate = function(key, value, data, callback){
   var wrapper = function(err, entities) {
+    debugger;
     if (entities && entities[0])
       callback(null, entities);
     else
       Zipcode.create(data, function(err, entity) {
+        debugger;
         callback(null, [entity]);
       });
   };
@@ -57,3 +59,6 @@ Zipcode.prototype.belong_to = function (other, callback) {
 Zipcode.prototype.unbelong_to = function (other, callback) {
   this.unrelate('BELONGS_TO', other, callback);
 };
+
+
+

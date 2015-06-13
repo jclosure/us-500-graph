@@ -22,6 +22,8 @@ Entity = module.exports = function Entity (_node) {
 
 
 // Entity Buildout
+Entity.db = db;
+
 
 // public instance properties:
 
@@ -73,7 +75,18 @@ Entity.prototype.del = function (callback) {
 };
 
 Entity.prototype.relate = function (relationType, other, callback) {
-  this._node.createRelationshipTo(other._node, relationType, {}, function (err, rel) {
+    var query = [
+    'MATCH (entity),(other)',
+    'WHERE ID(entity) = {entityId} AND ID(other) = {otherId}',
+    'MERGE (entity) -[:' + relationType + ']-> (other)'
+  ].join('\n')
+
+  var params = {
+    entityId: this.id,
+    otherId: other.id,
+  };
+
+  db.query(query, params, function (err) {
     callback(err);
   });
 };
@@ -91,29 +104,14 @@ Entity.prototype.unrelate = function (relationType, other, callback) {
     otherId: other.id,
   };
 
-  db.query(query, params, function (err) {
+  db.query(query, params, function (err, result) {
     callback(err);
   });
 };
 
-Entity.prototype.getRelationByType = function (relationType, other, callback) {
-  //todo: optimize by using labels for entities
-  var query = [
-    'MATCH (entity) -[rel:' + relationType + ']-> (other)',
-    'WHERE ID(entity) = {entityId} AND ID(other) = {otherId}',
-    'return rel',
-  ].join('\n')
 
-  var params = {
-    entityId: this.id,
-    otherId: other.id,
-  };
 
-  db.query(query, params, function (err, result) {
-    var rel = result['rel'] || false;
-    callback(err, rel);
-  });
-};
+
 
 // static methods:
 
@@ -164,8 +162,9 @@ Entity.getAllWhere = function (_class, queryWhere, callback) {
   ].join('\n');
 
   // NOTE: check the where clause to ensure its good...
-  //debugger;
+  debugger;
   db.query(query, null, function (err, results) {
+    debugger;
     if (err) return callback(err);
     var entitys = results.map(function (result) {
       var entity = new _class(result['entity']);
@@ -176,6 +175,9 @@ Entity.getAllWhere = function (_class, queryWhere, callback) {
     callback(null, entitys);
   });
 };
+
+
+
 
 // creates the entity and persists (saves) it to the db, incl. indexing it:
 Entity.create = function (_class, data, callback) {

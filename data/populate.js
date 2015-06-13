@@ -26,7 +26,7 @@ var domain = require('../models/domain.js');
 
 function noop(){};
 
-function populateRecord(record, recordDone) {
+function populateRecord(record, collect) {
   domain.State.getAllByPropertyOrCreate("name", record.state.name, record.state, function (err, states) {
     domain.County.getAllByPropertyOrCreate("name", record.county.name, record.county, function (err, counties) {
       domain.City.getAllByPropertyOrCreate("name", record.city.name, record.city, function (err, cities) {
@@ -67,7 +67,15 @@ function populateRecord(record, recordDone) {
                 state.belong_to(zipcode, noop);
                 zipcode.belong_to(state, noop);
 
-                recordDone("successfully populated: " + record.company.name);
+                collect({
+                  company: company,
+                  person: person,
+                  address: address,
+                  city: city,
+                  county: county,
+                  state: state,
+                  zipcode: zipcode
+                });
               });
             });
           });
@@ -140,14 +148,14 @@ function aquireRecords(csvFileName, report) {
   csvConverter.on("end_parsed",function(jsonObj){
 
     var records = jsonObj.map(function(obj){ return destructure(obj); });
+    
+    //var records = _.take(records, 10);
 
-    //var records = records;
-    var records = _.take(records, 50);
-
-    debugger;
     processSeries(records,
-                   populateRecord,
-                   function(results) { results.forEach(function(msg) { console.log(msg); }); });
+                  populateRecord,
+                  function(record) { console.log("processing: " + record.company.name); },
+                  function(record) { console.log("processed: " + record.company.name); },
+                   function(results) { results.forEach(function(result) { console.log("finished: " + result.company.name); }); });
 
   });
   
@@ -156,15 +164,17 @@ function aquireRecords(csvFileName, report) {
 }
 
 
-function processSeries(records, work, done){
+function processSeries(records, work, before, after, done){
 
    // A simple async series:
   
     var results = [];
   function series(record) {
     debugger;
-      if(record) {
-        work(record, function(result) {
+    if(record) {
+      before(record);
+      work(record, function(result) {
+        after(record);
           results.push(result);
           return series(records.shift());
         });
@@ -178,30 +188,4 @@ function processSeries(records, work, done){
 
 function noop(){};
 
-function populateRecordTest(record, recordDone) {
 
-  debugger;
-  domain.Company.getAllByPropertyOrCreate("name", record.company.name, record.company, function (err, companies) {
-    //domain.Person.getAllByPropertyOrCreate("name", record.person.name, record.person, function (err, people) {
-
-    debugger;
-    
-    //var person = people[0];
-    var company = companies[0];
-    
-    
-    // compose graph relations
-    
-    // employee--company
-    //person.employed_by(company, noop);
-    //company.employ(person, noop);
-    
-
-
-
-    recordDone("successfully populated: " + record.company.name);    
-    //});
-  });
-        
-        
-}
