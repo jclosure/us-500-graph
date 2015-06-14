@@ -3,13 +3,32 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+
     //- https://github.com/jclosure/linkurious.js
     script(src="/sigma/sigma.require.js")
     script(src="/sigma/plugins/sigma.parsers.json.min.js")
     script(src="/sigma/plugins/sigma.parsers.cypher.min.js")
+
+    //- http://graphalchemist.github.io/Alchemy/#/examples
+    link(rel='stylesheet', href='http://cdn.graphalchemist.com/alchemy.min.css')
+    script(src="http://cdn.graphalchemist.com/alchemy.min.js")
+   
+    //- http://almende.github.io/chap-links-library/js/network/examples/
+    //- http://almende.github.io/chap-links-library/js/network/doc/#Example
+    script(src='network.js')
+    
+    //- http://visjs.org/
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.2.0/vis.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.2.0/vis.min.css')
+    
     //- browserfied -> http://visionmedia.github.io/superagent/
     script(src="superagent.bundle.js")
-       
+    
+    //- google
+    script(src='http://www.google.com/jsapi')
+    
+    
+      
   body
     block content
 
