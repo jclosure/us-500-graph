@@ -1,0 +1,27 @@
+extends layout
+
+    block content
+    h1= title
+
+    p
+        | This is an app to present a small domain representing the us-500 dataset&nbsp;
+        a(href='https://github.com/jclosure/us-500-graph', target='_blank') US-500-Graph
+        |  from JClosure. It uses Node.js and the&nbsp;
+        a(href='https://github.com/thingdom/node-neo4j', target='_blank') node-neo4j
+        |  library, available on npm as&nbsp;
+        code neo4j
+        .
+
+    p.
+        This app implements the exercises found here:
+          ul
+            li Exercise A: Import CSV and Populate Graph
+            li Exercise B:
+            li Exercise C:
+          
+
+    p
+        strong
+            | Work with models:&nbsp;
+            a(href='/companies') View all companies
+            a(href='/people') View all employees

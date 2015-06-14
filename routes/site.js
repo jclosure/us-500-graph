@@ -1,6 +1,11 @@
 
+
+var Populate = require('../data/populate');
+var domain = require('../models/domain');
+
+
 /*
- * GET home page.
+ * Get home page.
  */
 
 exports.index = function(req, res){

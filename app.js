@@ -12,11 +12,10 @@
  */
 
 var express = require('express')
+  , cors = require('cors')
   , routes = require('./routes')
   , http = require('http')
   , path = require('path');
-
-
 
 
 
@@ -45,8 +44,10 @@ app.locals({
 });
 
 // Routes
+app.get('/', cors({ origin: '*' }), routes.site.index);
 
-app.get('/', routes.site.index);
+// Exercises Routes
+app.get('/exercises'); 
 
 // Company Routes
 app.get('/companies', routes.companies.list);
@@ -72,6 +73,27 @@ app.post('/people/:id/unfollow', routes.people.unfollow);
 
 console.log("Launching: " + app.get('env'));
 console.log("NEO4J_URL: " + process.env['NEO4J_URL']);
+
+
+// Add headers middleware
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening at: http://localhost:%d/', app.get('port'));

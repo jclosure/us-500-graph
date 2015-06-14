@@ -1,36 +1,26 @@
 // populate.js
 
-var _ = require('underscore');
-var async = require('async');
-//CSV Converter Class
-var Converter=require("csvtojson").core.Converter;
-var fs=require("fs");
+var _ = require('underscore'),
+    async = require('async'),
+    Converter=require("csvtojson").core.Converter,
+    fs=require("fs"),
+    domain = require('../models/domain.js');
 
 
-var domain = require('../models/domain.js');
+(function main() { importCsv("./data/us-500.csv"); })();
 
 
-(function main() {
-   
-  importCsv("./data/us-500.csv", function(msg) { console.log(msg); });
-  
-})();
-
-
-function importCsv(csvFileName) {
+function importCsv(csvFileName, number) {
   
   var fileStream=fs.createReadStream(csvFileName);
-
-  //new converter instance
-  var param={};
-  var csvConverter=new Converter(param);
+  var csvConverter=new Converter({});
   
   csvConverter.on("end_parsed",function(jsonObj){
 
     var records = jsonObj.map(function(obj){ return destructure(obj); });
 
-    // test a smaller set
-    //var records = _.take(records, 10);
+    if (number)
+      records = _.take(records, number);
 
     processSeries(records,
                   populateRecord,
@@ -45,8 +35,6 @@ function importCsv(csvFileName) {
 }
 
 
-// Helpers
-
 function populateRecord(record, collect) {
   domain.State.getByPropertyOrCreate("name", record.state.name, record.state, function (err, state) {
     domain.County.getByPropertyOrCreate("name", record.county.name, record.county, function (err, county) {
@@ -58,10 +46,9 @@ function populateRecord(record, collect) {
                         
                 // compose graph relations
 
-                if (person) {
+                if (company) {
                   
-                  // employee--company
-                  debugger;
+                  // employee<-->company
                   person.employed_by(company, noop);
                   company.employ(person, noop);
                   
@@ -150,6 +137,9 @@ function destructure(obj) {
     }
   };
 }
+
+
+// Helpers
 
 function processSeries(records, work, before, after, done){
 

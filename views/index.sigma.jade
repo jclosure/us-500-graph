@@ -1,0 +1,77 @@
+extends layout
+
+block content
+  h1= title
+
+  p
+   | This is an app to present a small domain representing the us-500 dataset&nbsp;
+   a(href='https://github.com/jclosure/us-500-graph', target='_blank') US-500-Graph
+   |  from JClosure. It uses Node.js and the&nbsp;
+   a(href='https://github.com/thingdom/node-neo4j', target='_blank') node-neo4j
+   |  library, available on npm as&nbsp;
+   code neo4j
+   .
+
+   p.
+     This app implements the exercises found here:
+
+    - obj = [ "Exercise A (Extra Credit Approach)", "Exercise B", "Exercise C" ]
+    ul
+      li #{obj[0]}
+         #graph-container
+      li #{obj[1]}
+      li #{obj[2]}
+   p.
+     This app is also simple social network manager: it lets you add and remove
+     companies and "follows" relationships between them.
+
+   p
+    strong
+      | Work with models:&nbsp;
+      a(href='/companies') View all companies
+      a(href='/people') View all employees
+
+  style.
+    #graph-container {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+    }
+  script.
+    var settings = new sigma.classes.configurable({
+      container: 'graph-container',
+      defaultNodeColor: '#999',
+      label: 'name'
+    });
+    sigma.neo4j.cypher(
+      { url: 'http://localhost:7474', user: 'neo4j', password: 'admin' },
+      'MATCH (n) OPTIONAL MATCH (n)-[r]->(m) RETURN n,r,m LIMIT 100',
+      {
+        container: 'graph-container',
+        defaultNodeColor: '#999',
+        label: 'name'
+      },
+      function(s) {
+        debugger;
+        console.log('Number of nodes :'+ s.graph.nodes().length);
+        console.log('Number of edges :'+ s.graph.edges().length);
+      }
+      );
+
+      // Calling neo4j to get all its relationship type
+      sigma.neo4j.getTypes(
+      { url: 'http://localhost:7474', user:'neo4j', password:'admin' },
+      function(types) {
+          console.log("Relationship types" + types);
+      }
+      );
+
+      // Calling neo4j to get all its node label
+      sigma.neo4j.getLabels(
+      { url: 'http://localhost:7474', user:'neo4j', password:'admin' },
+      function(labels) {
+          console.log("Node labels" + labels);
+      }
+      );

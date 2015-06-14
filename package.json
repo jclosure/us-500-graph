@@ -12,6 +12,8 @@
   "devDependencies": {
     "async": "^1.2.1",
     "chai": "^3.0.0",
+    "cors": "^2.7.1",
+    "ez-streams": "^0.1.7",
     "grunt": "latest",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-watch": "^0.6.1",
@@ -22,6 +24,8 @@
     "mocha": "^2.2.5",
     "node-dev": "~2.0.1",
     "requirejs": ">=2.1.10",
+    "streamline": "^0.12.1",
+    "superagent": "^1.2.0",
     "underscore": "^1.8.3",
     "underscore.string": "^3.1.1"
   },
