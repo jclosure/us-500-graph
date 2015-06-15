@@ -47,7 +47,10 @@ app.locals({
 app.get('/', cors({ origin: '*' }), routes.site.index);
 
 // Exercises Routes
-app.get('/exercises'); 
+app.get('/exercises');
+app.get('/exercises/a');
+app.get('/exercises/b');
+app.get('/exercises/c');
 
 // Company Routes
 app.get('/companies', routes.companies.list);

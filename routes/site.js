@@ -1,5 +1,5 @@
 
-
+// populate the graph when the app starts up
 var Populate = require('../data/populate');
 var domain = require('../models/domain');
 

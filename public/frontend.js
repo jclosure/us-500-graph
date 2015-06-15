@@ -14,12 +14,13 @@ function asGraphJSON (cypherResult) {
     var defaultTypeLabel = 'name';
 
     result.graph.nodes.forEach(function(node) {
+      //debugger;
       accum.nodes.push({
-        id: node.id,
+        id: node.id - 0,
         type: node.labels[0],
-        caption: node.properties[defaultTypeLabel] ||  
-          node.properties[Object.keys(node.properties)[0]] || 
-          node.id
+        caption: (node.properties[defaultTypeLabel] ||  
+                  node.properties[Object.keys(node.properties)[0]] || 
+                  node.id) + ''
       });
     });
 
@@ -32,8 +33,8 @@ function asGraphJSON (cypherResult) {
 
     result.graph.relationships.forEach(function(rel) {
       accum.edges.push({
-        source: rel.startNode,
-        target: rel.endNode,
+        source: rel.startNode - 0,
+        target: rel.endNode - 0,
         caption: rel.type
       });
     });
