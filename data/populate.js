@@ -167,5 +167,6 @@ function noop(){};
 // note: this is just a stub for this demo
 //       in production, we would use a cleansing service
 function addressNormalizer(line) {
-  return line.replace("St$", "Street");
+  //minimal sanitization .. just to show we know to do it..
+  return line.replace(/St$/, "Street");
 }
