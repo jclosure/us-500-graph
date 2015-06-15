@@ -16,6 +16,8 @@ Entity = module.exports = function Entity (_node) {
   this._node = _node;
 };
 
+// build out class state
+Entity.db = db;
 
 // public instance properties:
 
@@ -203,7 +205,6 @@ Entity.create = function (_class, data, callback) {
 
   // note: this is where entity classes actually get created!!!
   db.query(query, params, function (err, results) {
-    debugger;
     if (err) return callback(err);
     var entity = new _class(results[0]['entity']);
     entity._class = _class;
@@ -222,32 +223,15 @@ Entity.prototype.follow = function (other, callback) {
   });
 };
 
-Entity.prototype.unfollow = function (other, callback) {
-  //todo: use labels for perf
-  var query = [
-    'MATCH (entity) -[rel:follows]-> (other)',
-    'WHERE ID(entity) = {entityId} AND ID(other) = {otherId}',
-    'DELETE rel',
-  ].join('\n')
 
-  var params = {
-    entityId: this.id,
-    otherId: other.id,
-  };
 
-  db.query(query, params, function (err) {
-    callback(err);
-  });
-};
 
-// calls callback w/ (err, following, others) where following is an array of
-// entities this entity follows, and others is all other entities minus him/herself.
-Entity.prototype.getFollowingAndOthers = function (callback) {
+Entity.prototype.getRelatedAndOthers = function (sourceLabel, rel, targetLabel, callback) {
   // query all entities and whether we follow each one or not:
   // todo: use labels for perf
   var query = [
-    'MATCH (entity), (other)',
-    'OPTIONAL MATCH (entity) -[rel:follows]-> (other)',
+    'MATCH (entity:' + sourceLabel + '), (other:' + targetLabel + ')',
+    'OPTIONAL MATCH (entity) -[rel:' + rel + ']-> (other)',
     'WHERE ID(entity) = {entityId}',
     'RETURN other, COUNT(rel)', // COUNT(rel) is a hack for 1 or 0
   ].join('\n')
@@ -264,12 +248,12 @@ Entity.prototype.getFollowingAndOthers = function (callback) {
     var others = [];
 
     for (var i = 0; i < results.length; i++) {
-      var other = new Entity(results[i]['other']);
-      var follows = results[i]['COUNT(rel)'];
+      var other = new Entity(results[i]['other']); // note: these are not typed
+      var related = results[i]['COUNT(rel)'];
 
       if (entity.id === other.id) {
         continue;
-      } else if (follows) {
+      } else if (related) {
         following.push(other);
       } else {
         others.push(other);

@@ -120,7 +120,7 @@ function destructure(obj) {
       number: obj.company_zip
     },
     address: {
-      line: obj.company_address, 
+      line: addressNormalizer(obj.company_address), // Address Validation Applied
     },
     company: {
       name: obj.company_name,
@@ -147,7 +147,6 @@ function processSeries(records, work, before, after, done){
   
   var results = [];
   function series(record) {
-    debugger;
     if(record) {
       before(record);
       work(record, function(result) {
@@ -164,3 +163,9 @@ function processSeries(records, work, before, after, done){
 }
 
 function noop(){};
+
+// note: this is just a stub for this demo
+//       in production, we would use a cleansing service
+function addressNormalizer(line) {
+  return line.replace("St$", "Street");
+}

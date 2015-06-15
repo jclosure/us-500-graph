@@ -31,14 +31,14 @@ exports.create = function (req, res, next) {
  * GET /companies/:id
  */
 exports.show = function (req, res, next) {
-    Company.get(req.params.id, function (err, company) {
+  Company.get(req.params.id, function (err, company) {
         if (err) return next(err);
         // TODO also fetch and show followers? (not just follow*ing*)
-        company.getFollowingAndOthers(function (err, following, others) {
+    company.get_employees(function (err, employees, others) {
             if (err) return next(err);
             res.render('company', {
                 company: company,
-                following: following,
+                employees: employees,
                 others: others
             });
         });
@@ -73,14 +73,14 @@ exports.del = function (req, res, next) {
 };
 
 /**
- * POST /companies/:id/follow
+ * POST /companies/:id/employ
  */
-exports.follow = function (req, res, next) {
+exports.employ = function (req, res, next) {
     Company.get(req.params.id, function (err, company) {
         if (err) return next(err);
         Company.get(req.body.company.id, function (err, other) {
             if (err) return next(err);
-            company.follow(other, function (err) {
+            company.employ(other, function (err) {
                 if (err) return next(err);
                 res.redirect('/companies/' + company.id);
             });
@@ -89,9 +89,9 @@ exports.follow = function (req, res, next) {
 };
 
 /**
- * POST /companies/:id/unfollow
+ * POST /companies/:id/unemploy
  */
-exports.unfollow = function (req, res, next) {
+exports.unemploy = function (req, res, next) {
     Company.get(req.params.id, function (err, company) {
         if (err) return next(err);
         Company.get(req.body.company.id, function (err, other) {

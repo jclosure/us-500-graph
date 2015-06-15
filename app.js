@@ -21,6 +21,22 @@ var express = require('express')
 
 var app = express();
 
+
+// development only
+if ('development' == app.get('env')) {
+
+  app.use(express.errorHandler());
+
+  // enable open cors for dev
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+}
+
+
+
 // all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
@@ -32,25 +48,16 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 
-// development only
-if ('development' == app.get('env')) {
-  //set for appropriate environment
-  process.env.NEO4J_URL="http://neo4j:admin@localhost:7474"
-  app.use(express.errorHandler());
-}
 
 app.locals({
-    title: 'US-500 Reference App'    // default title
+  title: 'US-500 Reference App',    // default title
+  NEO4J_URL: process.env['NEO4J_URL']
 });
 
 // Routes
-app.get('/', cors({ origin: '*' }), routes.site.index);
+//app.get('/', cors({ origin: '*' }), routes.site.index);
+app.get('/', routes.site.index);
 
-// Exercises Routes
-app.get('/exercises');
-app.get('/exercises/a');
-app.get('/exercises/b');
-app.get('/exercises/c');
 
 // Company Routes
 app.get('/companies', routes.companies.list);
@@ -59,8 +66,8 @@ app.get('/companies/:id', routes.companies.show);
 app.post('/companies/:id', routes.companies.edit);
 app.del('/companies/:id', routes.companies.del);
 
-app.post('/companies/:id/follow', routes.companies.follow);
-app.post('/companies/:id/unfollow', routes.companies.unfollow);
+app.post('/companies/:id/employ', routes.companies.employ);
+app.post('/companies/:id/unemploy', routes.companies.unemploy);
 
 // People Routes
 app.get('/people', routes.people.list);
@@ -78,25 +85,6 @@ console.log("Launching: " + app.get('env'));
 console.log("NEO4J_URL: " + process.env['NEO4J_URL']);
 
 
-// Add headers middleware
-app.use(function (req, res, next) {
-
-  // Website you wish to allow to connect
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
-  // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-  // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-  // Set to true if you need the website to include cookies in the requests sent
-  // to the API (e.g. in case you use sessions)
-  res.setHeader('Access-Control-Allow-Credentials', true);
-
-  // Pass to next layer of middleware
-  next();
-});
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening at: http://localhost:%d/', app.get('port'));

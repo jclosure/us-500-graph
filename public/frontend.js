@@ -48,3 +48,19 @@ function asGraphJSON (cypherResult) {
 
   return jsonObj;
 }
+
+
+function harvestCredentials(url){
+  result = {
+    url: url
+  };
+  var input = url;
+  var regex = /\/\/.+:.+@/;
+  var matches = regex.exec(input);
+  if (matches && matches[0]) {
+    result.user = matches[0].split(':')[0].substring(2);
+    result.pass = matches[0].split(':')[1].slice(0,-1);
+    result.url = url.replace(matches[0],"//");
+  }
+  return result;
+}

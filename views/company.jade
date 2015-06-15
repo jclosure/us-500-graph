@@ -4,32 +4,32 @@ block content
     h1 #{company.name}
 
     p
-        a(href='/companies') Back to everyone
+        a(href='/companies') Back to All Companies
 
-    if following.length
-        p #{company.name} is following #{following.length} companies:
+    if employees.length
+        p #{company.name} employs #{employees.length} employees:
         // TODO should say 'company' if only one! ;)
         ul.companies
-            for other in following
+            for other in employees
                 li.company
-                    form(action='/companies/#{company.id}/unfollow', method='POST')
+                    form(action='/companies/#{company.id}/unemploy', method='POST')
                         a(href='/companies/#{other.id}') #{other.name}
                         input(type='hidden', name='company[id]', value='#{other.id}')
-                        input(type='submit', class='unfollow', value='x')
+                        input(type='submit', class='follow', value='x')
     else
-        p #{company.name} isn't following anyone currently.
+        p #{company.name} isn't employing anyone currently.
 
     if others.length
-        form(action='/companies/#{company.id}/follow', method='POST')
-            p Add someone for #{company.name} to follow:
+        form(action='/companies/#{company.id}/employ', method='POST')
+            p Add someone for #{company.name} to hire:
             label
                 select(name='company[id]', required)
                     option(value='')
                     for company in others
                         option(value='#{company.id}') #{company.name}
-            input(type='submit', value='Follow')
+            input(type='submit', value='Hire')
     else
-        p There's no one else left for #{company.name} to follow!
+        p There's no one else left for #{company.name} to hire!
 
     form(action='/companies/#{company.id}', method='POST')
         p Edit this company:

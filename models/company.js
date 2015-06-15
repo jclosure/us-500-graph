@@ -1,7 +1,6 @@
 
 var Entity = require('./entityFactory');
 
-
 // private constructor
 var Company = module.exports = function Company (_node) {
   this._node = _node;
@@ -65,3 +64,6 @@ Company.prototype.unemploy = function (other, callback) {
   this.unrelate('EMPLOYS', other, callback);
 };
 
+Company.prototype.get_employees = function (callback) {
+  this.getRelatedAndOthers("Company", "EMPLOYS", "Person", callback);
+}
