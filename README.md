@@ -20,15 +20,13 @@ organize dependencies. To install all dependencies and build the library, run `n
 
 	In your shell set the NEO4J_URL variable appropriately for your system.
 	
-	Example:
-	
-      Linux:
+    Linux:
       
-      	export NEO4J_URL=http://neo4j:admin@localhost:7474
+    	export NEO4J_URL=http://neo4j:admin@localhost:7474
       	
-      Windows:
+    Windows:
       
-      	set NEO4J_URL=http://neo4j:admin@localhost:7474
+    	set NEO4J_URL=http://neo4j:admin@localhost:7474
     
     Run the app:
     
