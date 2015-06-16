@@ -2,7 +2,7 @@
 
 This application is an implementation of the exercises prescribed by the [WayBlazer Neo4j Learning Exercises](https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit).
 
-![alt tag](https://github.com/jclosure/us-500-graph/tree/master/public/images/US-500_Reference_App.png)
+![alt tag](https://raw.githubusercontent.com/jclosure/us-500-graph/master/public/images/US-500_Reference_App.png)
 
 
 ## Build
