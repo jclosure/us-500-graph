@@ -41,10 +41,11 @@ WHERE e1.personal_phone = e2.personal_phone
 RETURN collect(distinct e1.name) as employee, phone
 
 # Bonus: Find all employees with a personal Gmail email address and identify which company they work for and in which location. Exclude anyone from CA.
-MATCH (e:Person)<-[:EMPLOYS]-(c:Company)-[:LOCATED_AT]->(a:Address)-[:BELONGS_TO]->(ci:City)-[:BELONGS_TO]->(co:County)-[:BELONGS_TO]->(s:State)
-WHERE NOT s.name = "CA"
-AND e.personal_email =~ ".+@gmail.com"
-RETURN e.name as name, e.personal_email as email, c.name as company, a.line as address, ci.name as city, co.name as county, s.name as state
+MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address) 
+WHERE id(a2) = id(a) 
+AND NOT s.name = "CA" 
+AND e.personal_email =~ ".+@gmail.com" 
+RETURN e.name as employee, c.name as company, a.line as address, ci.name as city, co.name as county, s.name as state, z.number as zipcode
 
 ## Anchor queries using indexed properties
 

@@ -46,7 +46,7 @@ To test the library, install the project dependencies once:
 
     npm install
 
-Make sure you set the NEO4J_URL env var before runnign the tests.  If you do not, no tests will run.
+Make sure you set the NEO4J_URL env var before running the tests.  If you do not, no tests will run.
 
 Then run the tests with:
 
