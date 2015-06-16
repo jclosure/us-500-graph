@@ -12,7 +12,7 @@ To build the library from source, clone the project from github
 The source code uses the module style of node (require and module.exports) to
 organize dependencies. To install all dependencies and build the library, run `npm install` in the root of the project.
 	
-	cd us-500-graph
+	cd us-500-graph	
 	npm install
 
 ## Usage
@@ -45,11 +45,78 @@ To test the library, install the project dependencies once:
 
     npm install
 
-Then run the tests with grunt:
+Make sure you set the NEO4J_URL env var before runnign the tests.  If you do not, no tests will run.
 
-    grunt
+Then run the tests with:
 
-## Documentation
+	
+    npm test
+
+You can develop with live testing with grunt-watch by running:
+    
+    grunt watch
+
+## Reference Documentation
+
+
+####alchemy
+http://graphalchemist.github.io/Alchemy/#/docs
+http://graphalchemist.github.io/Alchemy/#/examples
+https://github.com/graphalchemist/alchemy/
+
+####vis
+http://visjs.org/
+
+####network
+https://developers.google.com/chart/
+http://almende.github.io/chap-links-library/js/network/examples/
+
+####sigmajs
+https://github.com/jclosure/linkurious.js
+http://sigmajs.org/
+https://github.com/jacomyal/sigma.js/wiki/Settings
+
+####popoto
+http://www.popotojs.com/examples/results.html
+http://www.popotojs.com/examples/simple-graph.html
+
+####neo4j
+http://assets.neo4j.org/download/Neo4j_CheatSheet_v3.pdf
+http://neo4j.com/graphacademy/
+http://neo4j.com/docs/stable/query-schema-index.html
+http://neo4j.com/docs/stable/query-constraints.html
+http://graphaware.com/neo4j/2014/07/31/cypher-merge-explained.html
+
+####node-neo4j
+https://github.com/thingdom/node-neo4j/blob/master/test/crud._coffee
+https://github.com/Sage/streamlinejs/
+https://github.com/Sage/streamlinejs/blob/master/tutorial/tutorial.md
+https://github.com/Sage/streamlinejs/blob/master/lib/util/flows.md
+
+####jade
+http://jade-lang.com/reference/code/
+
+####emacs jade-mode
+https://github.com/magnars/.emacs.d/blob/master/site-lisp/jade-mode/jade-mode.el
+http://translate.googleusercontent.com/translate_c?depth=1&hl=en&prev=search&rurl=translate.google.com&sl=ja&u=http://www.goodpic.com/mt/archives2/2012/01/emacs_js2-mode_jade-mode.html&usg=ALkJrhi4mRfvCsF11ABdH7nJDGnAU20sVg
+https://libraries.io/emacs/company-web
+
+####superagent
+http://smalljs.org/ajax/superagent/
+http://visionmedia.github.io/superagent/#basic-authentication
+
+####browserfy
+https://github.com/substack/node-browserify
+
+####online-regex tester
+https://regex101.com/#javascript
+
+#### WindowBase64.btoa()
+https://developer.mozilla.org/en-US/docs/Web/API/WindowBase64/btoa
+
+####node-inspector
+https://github.com/node-inspector/node-inspector#configuration
+
 	
 ## Contributing
 
@@ -62,7 +129,12 @@ Then run the tests with grunt:
 
 ## Credits
 
-Joel Holder
+Joel Holder (for developing the app)
+
+Ricky Stillwell (for the problems)
+
+RMS (for emacs)
+	in which this app was lovingly made.
 
 ## License
 

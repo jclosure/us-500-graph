@@ -155,7 +155,7 @@ describe('Entity model testing:', function () {
 
     var monkeyProps = { name: "Monkey" };
     
-    County.getAllByPropertyOrCreate("name","Monkey",monkeyProps, function (err, entities) {
+    County.getByPropertyOrCreate("name","Monkey",monkeyProps, function (err, entities) {
       if (err) return next(err);
       debugger;
       expect(entities).to.exist;

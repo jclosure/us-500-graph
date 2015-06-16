@@ -103,7 +103,7 @@ describe('Entity model testing:', function () {
       County.get(entity.id, function(err, found){
         debugger;
         return next();        
-      }
+      });
 
 
     });

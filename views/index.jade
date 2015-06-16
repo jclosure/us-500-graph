@@ -6,15 +6,16 @@ block content
   p
    | This is an app to present a small domain representing the us-500 dataset&nbsp;
    a(href='https://github.com/jclosure/us-500-graph', target='_blank') US-500-Graph
-   |  from JClosure. It uses Node.js and the&nbsp;
+   | .  It uses Node.js and the&nbsp;
    a(href='https://github.com/thingdom/node-neo4j', target='_blank') node-neo4j
    |  library, available on npm as&nbsp;
    code neo4j
    .
 
-   p.
-     This app implements the exercises found here:
-
+   p
+     |The Exercises Document can be found  
+     a(href="https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit") here
+     .
     - exercises = [ "Exercise A - Designing the Model", "Exercise B - Populating the Model", "Exercise C - Querying the Model", "Exercise D - Adding Products", "Exercise E - Optimizing Performance" ]
     ul
       li 
@@ -79,17 +80,20 @@ block content
                     strong
                       p company.employ(employee, callback)
              
-            #example
+            #example-container
                 h3 Example
                 ol
                   li Query:
                    strong
                      pre
-                        | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)
-                        | WHERE NOT s.name = "CA"
-                        | AND e.personal_email =~ ".+@gmail.com"
-                        | RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4
-                        | LIMIT 100
+                       #example
+                          | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address) 
+                          | WHERE id(a2) = id(a) 
+                          | AND NOT s.name = "CA" 
+                          | AND e.personal_email =~ ".+@gmail.com" 
+                          | RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4, b5, count(e) as employee_count 
+                          | ORDER BY employee_count 
+                          | LIMIT 100
                   
               #graph
 
@@ -237,18 +241,33 @@ block content
         #example
                 h3 Example
                 ul
-                  li Add Index:
+                  li Add Indexes:
                     pre
                       strong
                         CREATE INDEX ON :State(name)
+                        br
+                        CREATE INDEX ON :Zipcode(number)
                   li Query:
-                   pre
-                     strong
-                      | MATCH (s:State {name: 'TX'})<-[:BELONGS_TO]-(co:County)<-[:BELONGS_TO]-(ci:City)<-[:BELONGS_TO]-(a:Address)-[:BELONGS_TO]->(z:Zipcode)
-                      | WHERE (z.number+'') =~ '75[0-9]+' 
-                      | RETURN a.line,ci.name,co.name,s.name,z.number
+                    pre
+                      strong
+                       | MATCH (s:State {name: 'TX'})<-[:BELONGS_TO]-(co:County)<-[:BELONGS_TO]-(ci:City)<-[:BELONGS_TO]-(a:Address)-[:BELONGS_TO]->(z:Zipcode)
+                       | WHERE (z.number+'') =~ '75[0-9]+' 
+                       | RETURN a.line,ci.name,co.name,s.name,z.number
+                  li Add Constraints:
+                    #w
+                      br
+                      #constraints 
+                        |Since states and zipcodes are known to be unique we can go even further by adding a uniqueness constraint to ensure data integrity on the index that will be automatically created from this command:
+                    pre
+                      strong
+                        CREATE CONSTRAINT ON (state:State) ASSERT state.name IS UNIQUE
+                        br
+                        CREATE CONSTRAINT ON (zipcode:Zipcode) ASSERT zipcode.number IS UNIQUE
                       
   
+  //- Have a nice day guys..  
+  
+  img(src="/images/wolf-dog.png")
                       
   script. 
 
@@ -260,14 +279,12 @@ block content
     var creds = harvestCredentials(url);
     endpoint = creds.url + '/db/data/transaction/commit';
     
-    var statement = [
-                     'MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)',  
-                     'WHERE NOT s.name = "CA"',
-                     'AND e.personal_email =~ ".+@gmail.com"',
-                     'RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4',
-                     'LIMIT 100'
-                     ].join("\n");
-        
+    
+    // grab the query from the dom
+    var statement = document.getElementById('example').innerText;
+    
+    debugger;
+                    
                  
     var data = { 
       statements: [{
@@ -298,6 +315,8 @@ block content
         c.auth(creds.user, creds.pass);
         
       c.end(function(err, res){
+      
+          debugger;
 
           if (firstResult =  res.body.results[0]) {
 
