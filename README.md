@@ -1,6 +1,6 @@
 # US-500-Graph Reference Application
 
-This application is an implementation of the exercises prescribed by the [WayBlazer Neo4j Learning Exercises](https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit) document.
+This application is an implementation of the exercises prescribed by the [WayBlazer Neo4j Learning Exercises](https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit).
 
 
 

@@ -1,13 +1,64 @@
 
-# find all companies in the same state
-match (p1:Person) -[e1:EMPLOYED_BY]-> (c1:Company) -[ra1:LOCATED_AT]-> (a1:Address) -[rb1:BELONGS_TO]-> (z1:Zipcode) -[rc1:BELONGS_TO]-> (s1:State),
-      (p2:Person) -[e2:EMPLOYED_BY]-> (c2:Company) -[ra2:LOCATED_AT]-> (a2:Address) -[rb2:BELONGS_TO]-> (z2:Zipcode) -[rc2:BELONGS_TO]-> (s2:State)
-where s1.name = s2.name
-and not c1.name = c2.name
-return *
-limit 100
+# Example
+
+MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address) 
+WHERE id(a2) = id(a) 
+AND NOT s.name = "CA" 
+AND e.personal_email =~ ".+@gmail.com" 
+RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4, b5, count(e) as employee_count 
+ORDER BY employee_count 
+LIMIT 100
 
 # delete all nodes and relationships
 MATCH (n)
 OPTIONAL MATCH (n)-[r]-()
 WITH n,r LIMIT 100000 DELETE n,r;
+
+# What is the first and last name for all employees that work for Rapid Trading Intl?
+MATCH (e:Person)-[:EMPLOYED_BY]->(c:Company {name: "Rapid Trading Intl"})
+RETURN (e.first_name + " " + e.last_name) as `Employee Name`
+
+# How many companies are located in Texas?
+MATCH (c:Company)-[:LOCATED_AT]->(:Address)-[:BELONGS_TO]->(:City)-[:BELONGS_TO]->(:County)-[:BELONGS_TO]->(s:State)
+WHERE s.name = "TX"
+RETURN count(c)
+
+# What companies have exactly 3 employees listed?
+MATCH (e:Person)<-[:EMPLOYS]-(c:Company)
+WITH c, count(e) as employee_count
+WHERE  employee_count = 3
+RETURN c
+
+# What zip codes are within California?
+MATCH (z:Zipcode)-[:BELONGS_TO]->(:State {name: "CA"})
+RETURN z.number
+
+# Do any employees have the same personal phone number?
+MATCH (e1:Person)-[r1:EMPLOYED_BY]->(),
+(e2:Person)-[r2:EMPLOYED_BY]->()
+WITH e1.personal_phone AS phone, e1, e2
+WHERE e1.personal_phone = e2.personal_phone
+RETURN collect(distinct e1.name) as employee, phone
+
+# Bonus: Find all employees with a personal Gmail email address and identify which company they work for and in which location. Exclude anyone from CA.
+MATCH (e:Person)<-[:EMPLOYS]-(c:Company)-[:LOCATED_AT]->(a:Address)-[:BELONGS_TO]->(ci:City)-[:BELONGS_TO]->(co:County)-[:BELONGS_TO]->(s:State)
+WHERE NOT s.name = "CA"
+AND e.personal_email =~ ".+@gmail.com"
+RETURN e.name as name, e.personal_email as email, c.name as company, a.line as address, ci.name as city, co.name as county, s.name as state
+
+## Anchor queries using indexed properties
+
+# Add Indexes:
+INDEX ON :State(name)
+INDEX ON :Zipcode(number)
+
+# Query:
+MATCH (s:State {name: 'TX'})<-[:BELONGS_TO]-(co:County)<-[:BELONGS_TO]-(ci:City)<-[:BELONGS_TO]-(a:Address)-[:BELONGS_TO]->(z:Zipcode)
+WHERE (z.number+'') =~ '75[0-9]+' 
+RETURN a.line,ci.name,co.name,s.name,z.number
+
+# Add Constraints:
+
+# Since states and zipcodes are known to be unique we can go even further by adding a uniqueness constraint to ensure data integrity on the index that will be automatically created from this command:
+CONSTRAINT ON (state:State) ASSERT state.name IS UNIQUE
+CONSTRAINT ON (zipcode:Zipcode) ASSERT zipcode.number IS UNIQUE
