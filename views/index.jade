@@ -87,10 +87,8 @@ block content
                    strong
                      pre
                        #example
-                          | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address) 
-                          | WHERE id(a2) = id(a) 
-                          | AND NOT s.name = "CA" 
-                          | AND e.personal_email =~ ".+@gmail.com" 
+                          | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a1:Address) 
+                          | WHERE id(a1) = id(a) 
                           | RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4, b5, count(e) as employee_count 
                           | ORDER BY employee_count 
                           | LIMIT 100
@@ -341,7 +339,7 @@ block content
             nodesTable.addColumn('string', 'style');  // optional      
             nodesTable.addColumn('string', 'group');
             jsonObj.nodes.forEach(function(node){
-              nodesTable.addRow([node.id, undefined, node.caption, shapes[node.type], shapes[node.type]]);
+              nodesTable.addRow([node.id, undefined, node.caption, shapes[node.type], node.type]);
             });
 
             // relationships
