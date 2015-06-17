@@ -9,3 +9,6 @@ strong a {
   padding: 0 0.25em;
   background-color: #ffa;
 }
+.bordered {
+    border: 1px solid black
+}
