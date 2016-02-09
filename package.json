@@ -5,6 +5,7 @@
   "author": "Joel Holder <jclosure@gmail.com>",
   "private": true,
   "dependencies": {
+    "csvtojson": "^0.5.2",
     "express": "~3.2.0",
     "jade": "~0.26.3",
     "neo4j": "~1.1"

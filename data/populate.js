@@ -2,7 +2,7 @@
 
 var _ = require('underscore'),
     async = require('async'),
-    Converter=require("csvtojson").core.Converter,
+    Converter=require("csvtojson").Converter,
     fs=require("fs"),
     domain = require('../models/domain.js');
 
