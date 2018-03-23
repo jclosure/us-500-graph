@@ -8,7 +8,9 @@
     "csvtojson": "^0.5.2",
     "express": "~3.2.0",
     "jade": "~0.26.3",
-    "neo4j": "~1.1"
+    "mocha-browser": "^0.2.0",
+    "neo4j": "~1.1",
+    "phantomjs": "^2.1.7"
   },
   "devDependencies": {
     "async": "^1.2.1",
@@ -35,6 +37,7 @@
     "npm": "1.2.x"
   },
   "scripts": {
+    "setup": "./bin/setup.sh",
     "start": "node-dev app.js",
     "test": "mocha test/*/*.js"
   }

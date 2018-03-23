@@ -1,9 +1,10 @@
 # US-500-Graph Reference Application
 
-This application is an implementation of the exercises prescribed by the [WayBlazer Neo4j Learning Exercises](https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit).
+This application is an implementation of the exercises prescribed by the [WayBlazer Neo4j Candidate Interview](https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit).
 
 ![alt tag](https://raw.githubusercontent.com/jclosure/us-500-graph/master/public/images/US-500_Reference_App.png)
 
+The dataset used is provided [here](https://github.com/jclosure/us-500-graph/blob/master/data/us-500.csv).
 
 ## Build
 To build the library from source, clone the project from github
@@ -12,33 +13,65 @@ To build the library from source, clone the project from github
 
 The source code uses the module style of node (require and module.exports) to
 organize dependencies. To install all dependencies and build the library, run `npm install` in the root of the project.
-	
-	cd us-500-graph	
-	npm install
+
+```
+cd us-500-graph
+npm install
+npm run setup
+```
 
 ## Usage
 
-	In your shell set the NEO4J_URL variable appropriately for your system.
-	
-    Linux:
-      
-    	export NEO4J_URL=http://neo4j:admin@localhost:7474
-      	
-    Windows:
-      
-    	set NEO4J_URL=http://neo4j:admin@localhost:7474
-    
-    Run the app:
-    
-    	node app.js
-    	
-    Navigate to:
-    
-    	http://localhost:3000
-      
-      
+### Prereqs
 
-## Test
+#### Install Neo4j
+
+Example:
+
+```
+brew install neo4j
+```
+
+#### Setup Neo4j
+
+The examples below are shown using the following credentials for Neo4j
+
+username: neo4j
+password: admin
+
+Make sure you've logged into your Neo4j server and set your user/pass.
+
+http://localhost:7474
+
+### Running the app
+
+In your shell set the NEO4J_URL variable appropriately for your system.
+
+Linux/MacOS:
+
+```
+export NEO4J_URL=http://neo4j:admin@localhost:7474
+```
+
+Windows:
+
+```
+set NEO4J_URL=http://neo4j:admin@localhost:7474
+```
+
+Run the app:
+
+```
+node app.js
+```
+
+Navigate to:
+
+http://localhost:3000
+
+
+
+## Testing
 
 To test the library, install the project dependencies once:
 
@@ -48,11 +81,11 @@ Make sure you set the NEO4J_URL env var before running the tests.  If you do not
 
 Then run the tests with:
 
-	
+
     npm test
 
 You can develop with live testing with grunt-watch by running:
-    
+
     grunt watch
 
 ## Reference Documentation
@@ -115,14 +148,14 @@ You can develop with live testing with grunt-watch by running:
 ####node-inspector
 - https://github.com/node-inspector/node-inspector#configuration
 
-	
+
 ## Contributing
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
 3. Commit your changes: `git commit -am 'Add some feature'`
 4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
+5. Submit a pull request
 
 
 ## Credits

@@ -5,7 +5,7 @@ block content
 
   p
    | This is an app to present a small domain representing the us-500 dataset&nbsp;
-   a(href='https://github.com/jclosure/us-500-graph', target='_blank') US-500-Graph
+   a(href='https://github.com/jclosure/us-500-graph/blob/master/data/us-500.csv', target='_blank') US-500-Graph
    | .  It uses Node.js and the&nbsp;
    a(href='https://github.com/thingdom/node-neo4j', target='_blank') node-neo4j
    |  library, available on npm as&nbsp;
@@ -13,12 +13,12 @@ block content
    .
 
    p
-     |The Exercises Document can be found  
+     |The Exercises Document can be found 
      a(href="https://docs.google.com/document/d/1rN9z8liOBWJKLCeNZUyEUJE5_QUVUsiJUsbZ_1MPx3Q/edit") here
      .
     - exercises = [ "Exercise A - Designing the Model", "Exercise B - Populating the Model", "Exercise C - Querying the Model", "Exercise D - Adding Products", "Exercise E - Optimizing Performance" ]
     ul
-      li 
+      li
         h3 #{exercises[0]}
         p.
           To design a graph capable of representing the us-500 data, I took the approach of understanding the following key concepts.
@@ -27,17 +27,17 @@ block content
           li Companies are entities unto themselves.  They have properties describing their characteristics and relationships to people and locations.
           li Locations are a category of entity that gets special treatment in my model.  Given that Addresses, Cities, Counties, States, and even Zipcodes represent geograpical boundaries, they are given their own nodes in my graph, allowing them to compose into one another via "belonging" to each other.
         img(src="/images/us-500 Model.png", width="75%")
-      li 
+      li
         h3 #{exercises[1]}
         p.
-          I decided to implement populating the graph model via node.  This 
-          Express app has been put together as a minimal implementation of key 
+          I decided to implement populating the graph model via node.  This
+          Express app has been put together as a minimal implementation of key
           concepts of my design.  It showcases a number of useful techniques and
           approaches to solving the tasks layed out by the challenge.
         ul
           li
-            p The graph is populated by a node.js module that works in the background as you start this app up.  
-            h4 Please see $US-500-HOME/data/populate.js.  
+            p The graph is populated by a node.js module that works in the background as you start this app up.
+            h4 Please see $US-500-HOME/data/populate.js.
             p This script generally does the following:
             ol
               li Reads in the csv
@@ -50,7 +50,7 @@ block content
               li Tokenizes and destructures it into records suitable for neo4j
               li Submits the records to neo4j and recieves back entity objects representing the domain model.  Each entity's type is represented as a label in neo4j, e.g. Person, Company, ...
               li Composes the relationships between the entities according to the graph model's specifications.
-          br 
+          br
           li Domain Model
             ul
               li Company
@@ -65,21 +65,21 @@ block content
                 | Work with models:&nbsp;
                 a(href='/companies') View all companies
                 a(href='/people') View all employees
-            img.bordered(src="/images/us-500-neo.graphdb.png", width="75%")    
+            img.bordered(src="/images/us-500-neo.graphdb.png", width="75%")
           br
           li Key Design Features
             ul
               br
               li EntityFactory Module
                 ul
-                  li 
+                  li
                     p Provides a general purpose means of creating Entities with a standard base class that handles CRUD operations and relating entities to one another through a natural API, e.g.
                     strong
                       p entity.relate('EMPLOYS', other, callback)
                     p Allows us to have a Company object with simpler derived api that looks like this:
                     strong
                       p company.employ(employee, callback)
-             
+
             #example-container
                 h3 Example
                 ol
@@ -87,15 +87,15 @@ block content
                    strong
                      pre
                        #example
-                          | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a1:Address) 
-                          | WHERE id(a1) = id(a) 
-                          | RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4, b5, count(e) as employee_count 
-                          | ORDER BY employee_count 
+                          | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a1:Address)
+                          | WHERE id(a1) = id(a)
+                          | RETURN e, c, a, ci, co, s, z, re, rl, b1, b2, b3, b4, b5, count(e) as employee_count
+                          | ORDER BY employee_count
                           | LIMIT 100
-                  
+
               #graph
 
-      li 
+      li
         h3 #{exercises[2]}
         ul
           li What is the first and last name for all employees that work for Rapid Trading Intl?
@@ -143,7 +143,7 @@ block content
               ul
                 li Biltmore Investors Bank
                 li Bailey Cntl Co Div Babcock
-          br    
+          br
           li What zip codes are within California?
             strong
               pre
@@ -208,29 +208,29 @@ block content
             ul
               li 504-845-1427 - [James Butt, Josephine Darakjy, Art Venere, Lenna Paprocki, Donette Foller, Simona Morasca, Mitsue Tollner, Leota Dilliard]
               li 330-566-8898 - [Hubert Walthall, Arthur Farrow]
-          br      
+          br
           li Bonus: Find all employees with a personal Gmail email address and identify which company they work for and in which location.  Exclude anyone from CA.
             strong
               pre
-                | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address) 
-                | WHERE id(a2) = id(a) 
-                | AND NOT s.name = "CA" 
-                | AND e.personal_email =~ ".+@gmail.com" 
+                | MATCH (e:Person)<-[re:EMPLOYS]-(c:Company)-[rl:LOCATED_AT]->(a:Address)-[b1:BELONGS_TO]->(ci:City)-[b2:BELONGS_TO]->(co:County)-[b3:BELONGS_TO]->(s:State)-[b4:BELONGS_TO]->(z:Zipcode)-[b5:BELONGS_TO]->(a2:Address)
+                | WHERE id(a2) = id(a)
+                | AND NOT s.name = "CA"
+                | AND e.personal_email =~ ".+@gmail.com"
                 | RETURN e.name as employee, c.name as company, a.line as address, ci.name as city, co.name as county, s.name as state, z.number as zipcode
             ul
-              li   
+              li
                 | <table class="table data"><thead><tr><th>employee</th><th>company</th><th>address</th><th>city</th><th>county</th><th>state</th><th>zipcode</th></tr></thead><tbody><tr><td>Larae Gudroe</td><td>Lehigh Furn Divsn Lehigh</td><td>6651 Municipal Rd</td><td>Houma</td><td>Terrebonne</td><td>LA</td><td>70360</td></tr><tr><td>James Butt</td><td>Benton, John B Jr</td><td>6649 N Blue Gum Street</td><td>New Orleans</td><td>Orleans</td><td>LA</td><td>70116</td></tr><tr><td>Cammy Albares</td><td>Truhlar And Truhlar Attys</td><td>5 Boston Ave #88</td><td>Sioux Falls</td><td>Minnehaha</td><td>SD</td><td>57105</td></tr><tr><td>Abel Maclead</td><td>Truhlar And Truhlar Attys</td><td>5 Boston Ave #88</td><td>Sioux Falls</td><td>Minnehaha</td><td>SD</td><td>57105</td></tr><tr><td>Kris Marrier</td><td>Truhlar And Truhlar Attys</td><td>5 Boston Ave #88</td><td>Sioux Falls</td><td>Minnehaha</td><td>SD</td><td>57105</td></tr><tr><td>Rosio Cork</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Arlene Klusman</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Danica Bruschke</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Cory Gibes</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Tyra Shields</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Viva Toelkes</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Micaela Rhymes</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Kallie Blackwood</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Elly Morocco</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Shenika Seewald</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Deeanna Juhas</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Tawna Buvens</td><td>Rapid Trading Intl</td><td>1048 Main Street</td><td>Fairbanks</td><td>Fairbanks North Star</td><td>AK</td><td>99708</td></tr><tr><td>Xuan Rochin</td><td>Carroccio, A Thomas Esq</td><td>2239 Shawnee Mission Pky</td><td>Tullahoma</td><td>Coffee</td><td>TN</td><td>37388</td></tr><tr><td>Marge Limmel</td><td>Bjork, Robert D Jr</td><td>189 Village Park Rd</td><td>Crestview</td><td>Okaloosa</td><td>FL</td><td>32536</td></tr><tr><td>Jovita Oles</td><td>Pagano, Philip G Esq</td><td>8 S Haven Street</td><td>Daytona Beach</td><td>Volusia</td><td>FL</td><td>32114</td></tr><tr><td>Dean Ketelsen</td><td>J M Custom Design Millwork</td><td>2 Flynn Rd</td><td>Hicksville</td><td>Nassau</td><td>NY</td><td>11801</td></tr><tr><td>Mirta Mallett</td><td>Stephen Kennerly Archts Inc Pc</td><td>7 S San Marcos Rd</td><td>New York</td><td>New York</td><td>NY</td><td>10004</td></tr><tr><td>Lemuel Latzke</td><td>Computer Repair Service</td><td>70 Euclid Ave #722</td><td>Bohemia</td><td>Suffolk</td><td>NY</td><td>11716</td></tr><tr><td>Howard Paulas</td><td>Asendorf, J Alan Esq</td><td>866 34th Ave</td><td>Denver</td><td>Denver</td><td>CO</td><td>80231</td></tr><tr><td>Nelida Sawchuk</td><td>Anchorage Museum Of Hist &amp; Art</td><td>3 State Route 35 S</td><td>Paramus</td><td>Bergen</td><td>NJ</td><td>7652</td></tr><tr><td>Nu Mcnease</td><td>Amazonia Film Project</td><td>88 Sw 28th Ter</td><td>Harrison</td><td>Hudson</td><td>NJ</td><td>7029</td></tr><tr><td>Heike Berganza</td><td>Cali Sportswear Cutting Dept</td><td>3 Railway Ave #75</td><td>Little Falls</td><td>Passaic</td><td>NJ</td><td>7424</td></tr><tr><td>Levi Munis</td><td>Farrell &amp; Johnson Office Equip</td><td>2094 Ne 36th Ave</td><td>Worcester</td><td>Worcester</td><td>MA</td><td>1603</td></tr><tr><td>Weldon Acuff</td><td>Advantage Martgage Company</td><td>73 W Barstow Ave</td><td>Arlington Heights</td><td>Cook</td><td>IL</td><td>60004</td></tr><tr><td>Geoffrey Acey</td><td>Price Business Services</td><td>7 West Ave #1</td><td>Palatine</td><td>Cook</td><td>IL</td><td>60067</td></tr><tr><td>Andra Scheyer</td><td>Ludcke, George O Esq</td><td>9 Church Street</td><td>Salem</td><td>Marion</td><td>OR</td><td>97302</td></tr><tr><td>Karan Karpin</td><td>New England Taxidermy</td><td>3 Elmwood Dr</td><td>Beaverton</td><td>Washington</td><td>OR</td><td>97005</td></tr><tr><td>Nieves Gotter</td><td>Vlahos, John J Esq</td><td>4940 Pulaski Park Dr</td><td>Portland</td><td>Multnomah</td><td>OR</td><td>97202</td></tr><tr><td>Frederica Blunk</td><td>Jets Cybernetics</td><td>99586 Main Street</td><td>Dallas</td><td>Dallas</td><td>TX</td><td>75207</td></tr><tr><td>Kristeen Turinetti</td><td>Jeanerette Middle School</td><td>70099 E North Ave</td><td>Arlington</td><td>Tarrant</td><td>TX</td><td>76013</td></tr><tr><td>Annmarie Castros</td><td>Tipiak Inc</td><td>80312 W 32nd Street</td><td>Conroe</td><td>Montgomery</td><td>TX</td><td>77301</td></tr><tr><td>Adelina Nabours</td><td>Courtyard By Marriott</td><td>80 Pittsford Victor Rd #9</td><td>Cleveland</td><td>Cuyahoga</td><td>OH</td><td>44103</td></tr><tr><td>Gertude Witten</td><td>Thompson, John Randolph Jr</td><td>7 Tarrytown Rd</td><td>Cincinnati</td><td>Hamilton</td><td>OH</td><td>45217</td></tr><tr><td>Laticia Merced</td><td>Alinabal Inc</td><td>72 Mannix Dr</td><td>Cincinnati</td><td>Hamilton</td><td>OH</td><td>45203</td></tr><tr><td>Kaitlyn Ogg</td><td>Garrison, Paul E Esq</td><td>2 S Biscayne Blvd</td><td>Baltimore</td><td>Baltimore City</td><td>MD</td><td>21230</td></tr><tr><td>Lonna Diestel</td><td>Dimmock, Thomas J Esq</td><td>1482 College Ave</td><td>Fayetteville</td><td>Cumberland</td><td>NC</td><td>28301</td></tr><tr><td>Alline Jeanty</td><td>W W John Holden Inc</td><td>55713 Lake City Hwy</td><td>South Bend</td><td>St Joseph</td><td>IN</td><td>46601</td></tr><tr><td>Raymon Calvaresi</td><td>Seaboard Securities Inc</td><td>6538 E Pomona St #60</td><td>Indianapolis</td><td>Marion</td><td>IN</td><td>46222</td></tr><tr><td>Reita Leto</td><td>Creative Business Systems</td><td>55262 N French Rd</td><td>Indianapolis</td><td>Marion</td><td>IN</td><td>46240</td></tr><tr><td>Sarah Candlish</td><td>Alabama Educational Tv Comm</td><td>45 2nd Ave #9759</td><td>Atlanta</td><td>Dekalb</td><td>GA</td><td>30328</td></tr><tr><td>Leota Ragel</td><td>Mayar Silk Inc</td><td>99 5th Ave #33</td><td>Trion</td><td>Chattooga</td><td>GA</td><td>30753</td></tr><tr><td>Sarah Candlish</td><td>Alabama Educational Tv Comm</td><td>45 2nd Ave #9759</td><td>Atlanta</td><td>Fulton</td><td>GA</td><td>30328</td></tr><tr><td>Jolanda Hanafan</td><td>Perez, Joseph J Esq</td><td>37855 Nolan Rd</td><td>Bangor</td><td>Penobscot</td><td>ME</td><td>4401</td></tr><tr><td>Salome Lacovara</td><td>Mitsumi Electronics Corp</td><td>9677 Commerce Dr</td><td>Richmond</td><td>Richmond City</td><td>VA</td><td>23219</td></tr><tr><td>Glenn Berray</td><td>Griswold, John E Esq</td><td>29 Cherry St #7073</td><td>Des Moines</td><td>Polk</td><td>IA</td><td>50315</td></tr><tr><td>Lonny Weglarz</td><td>History Division Of State</td><td>51120 State Route 18</td><td>Salt Lake City</td><td>Salt Lake</td><td>UT</td><td>84115</td></tr><tr><td>Alishia Sergi</td><td>Sport En Art</td><td>6 S 33rd Street</td><td>Aston</td><td>Delaware</td><td>PA</td><td>19014</td></tr><tr><td>Valentine Gillian</td><td>Sport En Art</td><td>6 S 33rd Street</td><td>Aston</td><td>Delaware</td><td>PA</td><td>19014</td></tr><tr><td>Teri Ennaco</td><td>Publishers Group West</td><td>99 Tank Farm Rd</td><td>Hazleton</td><td>Luzerne</td><td>PA</td><td>18201</td></tr></tbody></table>
-              
-  li 
+
+  li
     h3 #{exercises[3]}
-  
-  img(src="/images/us-500 Model2.png", width="75%")  
-  
-  li 
+
+  img(src="/images/us-500 Model2.png", width="75%")
+
+  li
     h3 #{exercises[4]}
     p In order to optimize performance for this model, there are a few things we can do initially.
     ol
-      li 
+      li
         div.
           Add indexes for other searchable properties
         br
@@ -250,42 +250,42 @@ block content
                     pre
                       strong
                        | MATCH (s:State {name: 'TX'})<-[:BELONGS_TO]-(co:County)<-[:BELONGS_TO]-(ci:City)<-[:BELONGS_TO]-(a:Address)-[:BELONGS_TO]->(z:Zipcode)
-                       | WHERE (z.number+'') =~ '75[0-9]+' 
+                       | WHERE (z.number+'') =~ '75[0-9]+'
                        | RETURN a.line,ci.name,co.name,s.name,z.number
                   li Add Constraints:
                     #w
                       br
-                      #constraints 
+                      #constraints
                         |Since states and zipcodes are known to be unique we can go even further by adding a uniqueness constraint to ensure data integrity on the index that will be automatically created from this command:
                     pre
                       strong
                         CREATE CONSTRAINT ON (state:State) ASSERT state.name IS UNIQUE
                         br
                         CREATE CONSTRAINT ON (zipcode:Zipcode) ASSERT zipcode.number IS UNIQUE
-                      
-  
-  //- Have a nice day guys..  
-  
+
+
+  //- Have a nice day guys..
+
   img(src="/images/wolf-dog.png")
-                      
-  script. 
+
+  script.
 
     // note: just doing this to make a general purpose front-end client for dev
     //       don't use this approach in your production app, instead do the http
     //       business on the backend - jclosure
-    
+
     var url = "#{NEO4J_URL}";
     var creds = harvestCredentials(url);
     endpoint = creds.url + '/db/data/transaction/commit';
-    
-    
+
+
     // grab the query from the dom
     var statement = document.getElementById('example').innerText;
-    
+
     debugger;
-                    
-                 
-    var data = { 
+
+
+    var data = {
       statements: [{
         statement: statement,
         resultDataContents: ["graph"],
@@ -300,7 +300,7 @@ block content
     google.load('visualization', '1');
 
     // Set callback to run when API is loaded
-    google.setOnLoadCallback(drawVisualization); 
+    google.setOnLoadCallback(drawVisualization);
 
     // Called when the Visualization API is loaded.
     function drawVisualization() {
@@ -309,18 +309,18 @@ block content
             .post(endpoint)
             .send(data)
             .set('Accept', 'application/json');
-      
+
       if (creds.user)
         c.auth(creds.user, creds.pass);
-        
+
       c.end(function(err, res){
-      
+
           debugger;
 
           if (firstResult =  res.body.results[0]) {
 
             jsonObj = asGraphJSON(firstResult);
-            
+
             shapes = {
               Company: "rect",
               Person: "star",
@@ -330,13 +330,13 @@ block content
               Zipcode: "dot"
             };
 
-            
+
             // nodes
             nodesTable = new google.visualization.DataTable();
             nodesTable.addColumn('number', 'id');
             nodesTable.addColumn('number', 'value');
             nodesTable.addColumn('string', 'text');
-            nodesTable.addColumn('string', 'style');  // optional      
+            nodesTable.addColumn('string', 'style');  // optional
             nodesTable.addColumn('string', 'group');
             jsonObj.nodes.forEach(function(node){
               nodesTable.addRow([node.id, undefined, node.caption, shapes[node.type], node.type]);
@@ -350,11 +350,11 @@ block content
             jsonObj.edges.forEach(function(edge){
               linksTable.addRow([edge.source, edge.target, undefined]);
             });
-            
-          
+
+
             // specify options
             var options = {
-             'width':  '1024px', 
+             'width':  '1024px',
              'height': '780px',
              'stabilize': false,
              'links': {
@@ -368,18 +368,12 @@ block content
             // Instantiate our graph object.
             network = new links.Network(document.getElementById('graph'));
 
-            // Draw our graph with the created data and options 
+            // Draw our graph with the created data and options
             network.draw(nodesTable, linksTable, options);
-           
+
 
 
           }
 
         });
     }
-
-
-    
-  
-    
-  

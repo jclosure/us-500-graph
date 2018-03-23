@@ -28,14 +28,14 @@ austinProps = {
 describe('Entity model testing:', function () {
 
    it('Should not overlap properties between instances.', function (next) {
-      
-    expect(County).to.exist; 
+
+    expect(County).to.exist;
 
     var props = { name: "Orangutan",
                   prop1: "Yorker",
                   prop2: "Wormple" };
 
-    
+
     County.create(props, function (err, entity) {
       if (err) return next(err);
 
@@ -48,12 +48,12 @@ describe('Entity model testing:', function () {
       //make another type from same factory this time
 
 
-      
+
       var props2 = { name: "Babbler",
                      prop1: "Homer",
                      prop3: "Zocky" };
 
-      
+
       County.create(props2, function (err, entity) {
         if (err) return next(err);
 
@@ -64,19 +64,19 @@ describe('Entity model testing:', function () {
         expect(entity.prop2).to.be.undefined;
 
         return next();
-        
+
       });
-      
+
     });
-  
-    
+
+
   });
 
 
-  
+
   it('Should have class of type County', function (next) {
-      
-    expect(County).to.exist; 
+
+    expect(County).to.exist;
 
     County.create(travisProps, function (err, entity) {
 
@@ -88,84 +88,84 @@ describe('Entity model testing:', function () {
 
       return next();
     });
-      
+
   });
 
 
-  
+
   it('Should be able to get from the graph', function (next) {
-      
-    expect(County).to.exist; 
+
+    expect(County).to.exist;
 
     County.create(travisProps, function (err, entity) {
-      
+
       if (err) return next(err);
       debugger;
       County.get(entity.id, function(err, found){
         debugger;
         expect(found).to.exist;
-        return next();        
+        return next();
       })
     });
-      
+
   });
 
-   
+
   it('Should be able to get all Counties from the graph', function (next) {
-      
-    expect(County).to.exist; 
+
+    expect(County).to.exist;
 
     County.create(travisProps, function (err, entity) {
-      
+
       if (err) return next(err);
       debugger;
       County.getAll(function(err, found){
         debugger;
-       
+
         expect(found).to.exist;
-        return next();        
+        return next();
       })
     });
-      
+
   });
 
   it('Should be able to get matching Counties from the graph', function (next) {
-      
-    expect(County).to.exist; 
+
+    expect(County).to.exist;
 
     County.create(travisProps, function (err, entity) {
-      
+
       if (err) return next(err);
       debugger;
       var where = "entity.name = 'Travis'";
       County.getAllWhere(where, function(err, found){
         debugger;
-       
+
         expect(found).to.exist;
-        return next();        
+        return next();
       })
     });
-      
+
   });
 
 
   it('Should be able to get Counties by property or create one', function (next) {
-    
+
     expect(County).to.exist;
 
     var monkeyProps = { name: "Monkey" };
-    
+
     County.getByPropertyOrCreate("name","Monkey",monkeyProps, function (err, entities) {
       if (err) return next(err);
       debugger;
       expect(entities).to.exist;
       expect(entities).to.have.members;
-      return next();        
+      return next();
     });
   });
 
-   
-   
+
+
   it('Cities belong to Counties, Counties belog to States', function(next){
 
     State.create(texasProps, function (err, state) {
@@ -187,9 +187,9 @@ describe('Entity model testing:', function () {
         });
       });
     });
-    
+
   });
 
 
-  
+
 });
